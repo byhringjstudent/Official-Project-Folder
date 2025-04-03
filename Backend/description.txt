@@ -1,0 +1,6 @@
+This is the folder for the backend development of LegacyIQ. 
+This will contain programs related to:
+    - docker/databse
+    - email verification
+    - blog feature
+    - any other backend stuff
