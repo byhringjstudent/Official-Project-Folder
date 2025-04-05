@@ -1,71 +1,52 @@
-# Getting Started with Create React App
+React + Vite + Tailwind CSS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This template sets up React using Vite along with Tailwind CSS for utility-first styling. It's a minimal and fast setup ideal for modern frontend development.
+🔧 Included Features
 
-## Available Scripts
+    Vite for lightning-fast bundling and hot module replacement (HMR)
 
-In the project directory, you can run:
+    React for building UI components
 
-### `npm start`
+    Tailwind CSS for utility-first styling
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    Optional: Styles in index.css
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+# React + Vite
 
-### `npm test`
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Currently, two official plugins are available:
 
-### `npm run build`
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Create React-Vite App
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. npm create vite@latest
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Proceed
 
-### `npm run eject`
+3. Select Framework: React
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+4. Select Variant: JavaScript
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+5. To run the dev server: npm run dev
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Expanding the ESLint configuration
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
-## Learn More
+# Tailwind CSS & FlowBite
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+https://tailwindcss.com/docs/installation/using-vite
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+npm install tailwindcss @tailwindcss/vite
 
-### Code Splitting
+npm install flowbite
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Add TailwindCSS to Vite:
+1. Add "import tailwindcss from '@tailwindcss/vite' to the top of the vite.config.js
 
-### Analyzing the Bundle Size
+2. Add tailwindcss() next to react() in plugins.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-"# Official-Project-Folder" 
+3. Import TailwindCSS into your index.css file: "@import "tailwindcss";
