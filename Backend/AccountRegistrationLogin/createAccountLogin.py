@@ -154,7 +154,7 @@ def editAccountDetails():
         except Exception as e: 
             return jsonify({'message': f'Error updating first name: {str(e)}'}),500
             
-    if newFirstName:
+    if newLastName:
         try:
             query = sql.SQL("UPDATE users set lastname = %s WHERE email = %s")
             cur.execute(query, (newLastName, currentEmail))
