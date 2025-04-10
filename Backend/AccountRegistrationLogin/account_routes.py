@@ -1,4 +1,4 @@
-from flask import request, jsonify, session, Blueprint
+from flask import request, jsonify, session, Blueprint, redirect, url_for, flash
 import psycopg2
 from psycopg2 import sql
 import bcrypt
@@ -9,6 +9,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from flaskAppConfig import db_info
 from utils import uniqueID
+from EmailVerification.email_verification_routes import send_verification_email
 
 dotenv_path = os.path.join(os.path.dirname(__file__), 'flask-app.env')
 load_dotenv(dotenv_path)
@@ -45,16 +46,8 @@ def register_user():
         cur.close()
         conn.close()
         #send confirmation email to newly created account. 
-        message = Mail(
-        from_email='Legacyiqdevteam@outlook.com',
-        to_emails=(str(email)),
-        subject='LegacyIQ Account Created',
-        html_content='<strong>aThe Legacy Architects are glad you have joined the LegacyIQ community and we hope you enjoy your time. Thank you for signing up with LegacyIQ!</strong>')
-        try:
-            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-            response = sg.send(message)
-        except Exception as e:
-            print(str(e))         
+        send_verification_email(email)
+                 
         
         return jsonify({'message': 'User created successfully. You will be recieving a confirmation email soon!'}), 201
     except Exception as e: 
@@ -67,6 +60,8 @@ def userLogin():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+    if session.get('accountid'):
+        return jsonify({"message": 'User already logged in'}), 401
     
     if not email or not password:
         return jsonify({'message': 'Email and Password are required to login.'}), 400
@@ -107,6 +102,42 @@ def userLogin():
         return jsonify({'message': 'User logged in successfully'}), 201
     except Exception as e: 
         return jsonify({'message': f'Error logging in user: {str(e)}'}),500
+
+@app_bp.route('/logout', methods = ['POST'])
+def userLogout():
+    try:
+        session.clear()
+        #flash('You have been logged out.')
+        print('User logged out successfully', dict(session))
+        return jsonify({'message': 'Logged out successfully'})
+        return redirect(url_for('login'))    
+    except Exception as e:
+        return jsonify({'message': 'Log out unsuccessful'}), 500   
+
+@app_bp.route('/viewAccountDetails', methods = ['GET'])
+def viewAccountDetails():
+    conn = psycopg2.connect(**db_info)
+    cur = conn.cursor()
+    accountid = session.get('accountid')
+    
+    if not accountid:
+        return jsonify({'message': 'User not logged in'}), 401
+    
+    try:
+        query = sql.SQL("SELECT email, firstname, lastname FROM users WHERE accountid = %s")
+        cur.execute(query, (accountid,))
+        userDetails = cur.fetchone()
+        
+        if userDetails:
+            email, firstName, lastName = userDetails
+            cur.close()
+            conn.close()
+            return jsonify({'email': email, 'firstName': firstName, 'lastName': lastName}), 20
+        else:
+            return jsonify({'message': 'User not found'}), 404
+    except Exception as e: 
+        return jsonify({'message': f'Error retrieving account details: {str(e)}'}),500
+
     
 
 
@@ -194,14 +225,15 @@ def deleteAccount():
         return jsonify({'message': f'Error deleting account: {str(e)}'}),500
         
 #Code to test in CMD 
-#curl -X POST http://localhost:5000/account/register -H "Content-Type: application/json" -d "{\"email\": \"mikeymaher07@gmail.com\",\"password\":\"testing\",\"firstName\":\"Michael\",\"lastName\":\"Maher\"}"
+#curl -X POST http://localhost:5000/account/register -H "Content-Type: application/json" -d "{\"email\": \"mikeymaher71@gmail.com\",\"password\":\"what\",\"firstName\":\"Michael\",\"lastName\":\"Simko\"}"
 #edit account details 
 #curl -X PUT http://127.0.0.1:5000/account/edit -H "Content-Type: application/json" -d "{\"currentEmail\": \"testing@test.com\", \"password\": \"newpassword123\"}"
 #curl -X PUT http://127.0.0.1:5000/account/edit -H "Content-Type: application/json" -d "{\"currentEmail\": \"mikeymaher07@live.com\", \"firstName\": \"Michael\"}"
 #curl -X PUT http://127.0.0.1:5000/account/edit -H "Content-Type: application/json" -d "{\"currentEmail\": \"testing@test.com\", \"lastName\": \"Maher\"}"
 #curl -X PUT http://127.0.0.1:5000/account/edit -H "Content-Type: application/json" -d "{\"currentEmail\": \"testing@test.com\", \"newEmail\": \"newemail@example.com\"}"
-#curl -X POST http://127.0.0.1:5000/account/deleteAccount -H "Content-Type: application/json" -d "{\"email\": \"mikeymaher07@live.com\"}"
-#curl -X POST http://127.0.0.1:5000/account/login -H "Content-Type: application/json" -d "{\"email\": \"mikeymaher07@gmail.com\", \"password\": \"testing\"}" -c cookies.txt
+#curl -X POST http://127.0.0.1:5000/account/deleteAccount -H "Content-Type: application/json" -d "{\"email\": \"mikeymaher71@gmail.com\"}"
+#curl -X POST http://127.0.0.1:5000/account/login -H "Content-Type: application/json" -d "{\"email\": \"mahermikey71@gmail.com\", \"password\": \"what\"}" -c cookies.txt
+#curl -i -X POST http://127.0.0.1:5000/account/logout - b cookies.txt
 #Testing blog Features
 #curl -X POST http://127.0.0.1:5000/blog/createposts -H "Content-Type: application/json" -d "{\"title\": \"My New Blog Post\", \"content\": \"This is the content of the blog post.\"}" -b cookies.txt
 #curl -X PUT http://127.0.0.1:5000/blog/updateposts -H "Content-Type: application/json" -d "{\"title\": \"My New Blog Post\", \"content\": \"This is the content of the blog post.\"}" -b cookies.txt

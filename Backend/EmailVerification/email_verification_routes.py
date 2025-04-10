@@ -4,30 +4,38 @@
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Blueprint
 from itsdangerous import URLSafeTimedSerializer
+from dotenv import load_dotenv
+from flask import jsonify
+from flaskAppConfig import db_info
+import psycopg2
 
-#randomly generated flask key
-app = Flask (__name__)
-rand_priv_key = os.urandom(24)
-app.config['SECRET_KEY'] = rand_priv_key
+app_bp = Blueprint('email_verification_routes', __name__)
+
+dotenv_path = os.path.join(os.path.dirname(__file__), 'flask-app.env')
+load_dotenv(dotenv_path)
+
+app_secret_key = os.getenv("SECRET_KEY")
+
 
 #settingup sendgrid
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY") #Switch back to SENDGRID_API_KEY when deploying, This is just for testing and not wasting emails on actualy sendgrid account. 
 sg = SendGridAPIClient(SENDGRID_API_KEY)
 
 #generate email verification token
 def generate_token(email):
-    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    serializer = URLSafeTimedSerializer(app_secret_key)
     return serializer.dumps(email, salt = 'email-confirmation')
 
 #send verification email from legacyiqdevteam@outlook.com
 def send_verification_email(email):
+    print("function called")
     token = generate_token(email)
-    verification_url = url_for('verify_email', token = token, _external = True)
+    verification_url = url_for('email_verification_routes.verify_email', token = token, _external = True)
 
     message = Mail(
-        from_email = 'legacyiqdevteam@outlook.com',
+        from_email = 'legacyiqdevteam@outlook.com', 
         to_emails = email,
         subject = 'Please verify your email address',
         html_content = f'Click here to verify email address: {verification_url}'
@@ -35,33 +43,36 @@ def send_verification_email(email):
 
     try:
         response = sg.send(message)
-        return f"A verification email was sent to {email}, your action is needed."
+        return f"A verification email was sent to {str(email)}, your action is needed."
     except Exception as e:
         return f"We encountered an error while sending your verification email: {str(e)}"
 
-@app.route('/send_verification_email/<email>')
+@app_bp.route('/send_verification_email/<email>')
 def send_verification(email):
     return send_verification_email(email)
 
 #confirming verification token
-@app.route('/verify_email/<token>')
+@app_bp.route('/verify_email/<token>')
 def verify_email(token):
     email = confirm_token(token)
     if email:
-        return "Your email address has been successfully verified!"
+        conn = psycopg2.connect(**db_info)
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET verifiedemail = TRUE WHERE email = %s", (email,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"message": "Your email address has been successfully verified!"})
     else:
-        return "Sorry, your verification link is invalid or expired."
+        return jsonify({"error":"Sorry, your verification link is invalid or expired."})
 
 def confirm_token(token, expiration = 3600):
     try:
-        serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        serializer = URLSafeTimedSerializer(app_secret_key)
         return serializer.loads(token, salt = 'email-confirmation', max_age = expiration)
     except:
         return None
 
-if __name__ == '__main__':
-#running flask in debug mode, turn debug off when we deploy
-    app.run(debug = True)
 
 """
 Example of what it might look like to trigger the email verification in the front end (react.js and javaScript)
