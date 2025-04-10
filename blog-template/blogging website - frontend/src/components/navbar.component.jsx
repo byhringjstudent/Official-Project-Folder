@@ -44,8 +44,7 @@ const Navbar = () => {
 
                 <Link className="btn-dark py-2" to="/signup">
                     Sign Up
-                </Link>
-                
+                </Link> 
             </div>
         </nav>
     );
