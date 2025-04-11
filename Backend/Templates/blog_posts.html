@@ -12,9 +12,9 @@
         <ul>
             {% for post in posts %}
                 <li>
-                    <h2>{{ post[1] }}</h2>  <!-- blogtitle -->
-                    <p>{{ post[2] }}</p>    <!-- dbinstance -->
-                    <small>Published on: {{ post[3] }}</small> <!-- dateposted -->
+                    <h2>{{ post[0] }}</h2>  <!-- blogtitle -->
+                    <p>{{ post[1] }}</p>    <!-- dbinstance -->
+                    <small>Published on: {{ post[2] }}</small> <!-- dateposted -->
                 </li>
             {% endfor %}
         </ul>
