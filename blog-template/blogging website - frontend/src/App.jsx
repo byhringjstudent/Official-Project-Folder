@@ -4,7 +4,7 @@ import UserAuthForm from "./pages/userAuthForm.page";
 
 const App = () => {
     return (
-                <Routes>
+        <Routes>
             <Route>
                 <Route path="/" element={<Navbar />} />
                 <Route path="/signin" element={<UserAuthForm type="sign-in" />} />
