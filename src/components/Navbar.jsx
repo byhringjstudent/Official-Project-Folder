@@ -28,7 +28,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
 
   return (
     <nav style={styles.nav}>
-      <h2 style={styles.logo}>My App</h2>
+      <h2 style={styles.logo}>Legacy IQ</h2>
       <div style={styles.links}>
         {!isLoggedIn ? (
           <><Link to="/" style={styles.link}>Login</Link><Link to="/register" style={styles.link}>Register</Link></>

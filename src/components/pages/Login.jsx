@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Login.css'; // Make sure this file exists in the same folder
 
-export default function Login({setIsLoggedIn}) {
+export default function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const navigate = useNavigate(); // ✅ Hook for programmatic navigation
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +17,7 @@ export default function Login({setIsLoggedIn}) {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Include cookies for session handling
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
 
@@ -25,8 +26,8 @@ export default function Login({setIsLoggedIn}) {
       if (response.ok && data.message === 'User logged in successfully') {
         setMessage('Login successful! Redirecting...');
         setIsLoggedIn(true);
-        localStorage.setItem('isLoggedIn', 'true'); 
-        navigate('/home'); // ✅ Redirect to home
+        localStorage.setItem('isLoggedIn', 'true');
+        navigate('/home');
       } else {
         setMessage(data.message || 'Login failed.');
       }
@@ -37,26 +38,31 @@ export default function Login({setIsLoggedIn}) {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: 'auto' }}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="login-container">
+      <form onSubmit={handleSubmit} className="login-form">
+        <h2>Login</h2>
+
+        <label htmlFor="email">Email:</label>
         <input
           type="email"
+          id="email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
           required
-        /><br />
+        />
+
+        <label htmlFor="password">Password:</label>
         <input
           type="password"
+          id="password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
-          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
           required
-        /><br />
+        />
+
         <button type="submit">Login</button>
+        <p className="login-message">{message}</p>
       </form>
-      <p>{message}</p>
     </div>
   );
 }
