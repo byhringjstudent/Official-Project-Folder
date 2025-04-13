@@ -27,7 +27,7 @@ class Config: # Base configuration class
 #    ENV = 'testing'
 
 #database connection information
-db_info ={'host': "localhost",
+db_info ={'host': "192.168.1.221",
     'port': "5432",
     'database' : "LegacyIQ",
     'user' : "postgres",

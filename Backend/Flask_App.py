@@ -13,7 +13,7 @@ def create_app(config_class=Config): # creating the app with the config class
     app.config.from_object(config_class) # loading the config class
 
     Session(app)
-    CORS(app, origins = ["http://localhost:3000"], supports_credentials= True, ) # enabling CORS for the app
+    CORS(app, origins = ["http://localhost:5173"], supports_credentials= True, ) # enabling CORS for the app
     app.register_blueprint(account_routes.app_bp, url_prefix='/account') # registering the account routes blueprint
     app.register_blueprint(blog_routes.app_bp, url_prefix='/blog') # registering the blog routes blueprint
     app.register_blueprint(email_verification_routes.app_bp, url_prefix='/email')# registering the email verification routes blueprint
