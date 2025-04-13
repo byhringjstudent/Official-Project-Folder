@@ -1,6 +1,7 @@
 import psycopg2
+
 conn = psycopg2.connect(
-    host = "192.168.1.221",
+    host = "localhost",
     port = "5432",
     database = "LegacyIQ",
     user = "postgres",
