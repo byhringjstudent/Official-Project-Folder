@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-
 export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
   const navigate = useNavigate();
 
@@ -9,9 +8,9 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
     try {
       const response = await fetch('http://localhost:5000/account/logout', {
         method: 'POST',
-        credentials: 'include', // important for session cookies!
+        credentials: 'include',
       });
-  
+
       if (response.ok) {
         console.log('Logged out successfully');
         localStorage.removeItem('isLoggedIn');
@@ -24,18 +23,25 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
       console.error('Error during logout:', error);
     }
   };
-  
 
   return (
     <nav style={styles.nav}>
-      <h2 style={styles.logo}>Legacy IQ</h2>
+      <div style={styles.brand}>
+        <span style={styles.logoText}>Legacy IQ</span>
+        <i className="fi fi-bs-drafting-compass" style={styles.icon}></i>
+      </div>
+
       <div style={styles.links}>
         {!isLoggedIn ? (
-          <><Link to="/" style={styles.link}>Login</Link><Link to="/register" style={styles.link}>Register</Link></>
+          <>
+            <Link to="/" style={styles.link}>Login</Link>
+            <Link to="/register" style={styles.link}>Register</Link>
+          </>
         ) : (
           <>
             <Link to="/home" style={styles.link}>Home</Link>
             <Link to="/create" style={styles.link}>Create Blog</Link>
+            <Link to="/knowledge-base" style={styles.link}>Knowledge Base</Link>
             <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
           </>
         )}
@@ -53,8 +59,19 @@ const styles = {
     padding: '10px 20px',
     color: 'white',
   },
-  logo: {
+  brand: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
+  logoText: {
     margin: 0,
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+  },
+  icon: {
+    fontSize: '20px',
+    color: 'white',
   },
   links: {
     display: 'flex',

@@ -6,6 +6,7 @@ import Home from './components/pages/Home';
 import CreatePost from './components/CreatePost';
 import Register from './components/pages/Register';
 import Logout from './components/pages/Logout';  // Import Logout component
+import KnowledgeBase from './components/pages/KnowledgeBase';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);  // State to track if the user is logged in
@@ -51,6 +52,9 @@ function App() {
           path="/logout"
           element={<Logout setIsLoggedIn={setIsLoggedIn} />}
         />
+        {/* Knowledge Base Route */}
+        <Route path="/knowledge-base" element={<KnowledgeBase />} />
+        {/* Redirect to home if no match */}
       </Routes>
     </>
   );
