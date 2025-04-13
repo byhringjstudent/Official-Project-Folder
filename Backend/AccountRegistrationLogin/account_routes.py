@@ -135,11 +135,9 @@ def userLogout():
         session.clear()#clear the session to log out the user
         #flash('You have been logged out.')
         #print('User logged out successfully', dict(session)) #debugging statement to check if the user is logged out successfully
-        response = make_response(redirect(url_for('account_routes.userLogin'))) #redirect to the login page after logging out 
-        response.set_cookie('session', '', expires=0, path = '/', domain = '127.0.0.1') #set the session cookie to expire immediately
-        accountid = session.get('accountid') # debugging statement to check if the account ID is cleared from the session
-        print(accountid) #debugging statement to check if the account ID is cleared from the session
-        return response #return success message if the user is logged out successfully
+        response = jsonify({'message': 'User logged out successfully'})
+        response.set_cookie('session', '', expires=0)  # optional: clears cookie
+        return response, 200 #return success message if the user is logged out successfully
     except Exception as e:
         return jsonify({'message': f'Log out unsuccessful: {str(e)}'}), 500   #return error message if there is an error logging out the user
     

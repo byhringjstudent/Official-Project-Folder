@@ -53,11 +53,12 @@ def get_posts():
     try:
         conn = psycopg2.connect(**db_info)
         cur = conn.cursor()
-        cur.execute("SELECT blogtitle, dbinstance, dateposted FROM blog ORDER by dateposted DESC")
+        cur.execute("SELECT blogtitle, dbinstance, dateposted, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid ORDER by dateposted DESC")
         posts = cur.fetchall()
         cur.close()
         conn.close()
-        return render_template('blog_posts.html', posts=posts), 200
+        posts_data = [{"title": post[0], "content": post[1], "date": post[2].strftime("%Y-%m-%d"), "firstName": post[3], "lastName": post[4]}for post in posts]
+        return jsonify(posts_data), 200
     except Exception as e:
         return jsonify({'message': f'Error retrieving posts: {str(e)}'}), 500
    
