@@ -31,6 +31,7 @@ export default function CreatePost() {
       <form onSubmit={handleSubmit}>
         <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
         <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Content" />
+        
         <button type="submit">Submit</button>
       </form>
       <p>{message}</p>

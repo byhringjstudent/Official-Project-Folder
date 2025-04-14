@@ -27,7 +27,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
   return (
     <nav style={styles.nav}>
       <div style={styles.brand}>
-        <span style={styles.logoText}>Legacy IQ</span>
+        <span style={styles.logoText}>LegacyIQ</span>
         <i className="fi fi-bs-drafting-compass" style={styles.icon}></i>
       </div>
 
@@ -40,8 +40,10 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
         ) : (
           <>
             <Link to="/home" style={styles.link}>Home</Link>
+            <Link to="/blog" style={styles.link}>Blog</Link>
             <Link to="/create" style={styles.link}>Create Blog</Link>
             <Link to="/knowledge-base" style={styles.link}>Knowledge Base</Link>
+            <Link to="/account-portal" style={styles.link}>Account</Link>
             <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
           </>
         )}

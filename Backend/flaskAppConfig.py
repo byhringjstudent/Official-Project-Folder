@@ -29,7 +29,7 @@ class Config: # Base configuration class
 #database connection information
 db_info ={'host': "localhost",
     'port': "5432",
-    'database' : "legacyiq",
+    'database' : "LegacyIQ",
     'user' : "postgres",
     'password':"password123"}
 
