@@ -214,25 +214,12 @@ def editAccountDetails():
     data = request.get_json() #get json data from request
     #currentEmail = data.get('currentEmail') #get current email from request data
     newEmail = data.get('newEmail') #get new email from request data
-    newPassword = data.get('password') #get new password from request data
     newFirstName = data.get('firstName') #get new first name from request data
     newLastName = data.get('lastName') #get new last name from request data
     accountid = session.get('accountid') #get the account ID from the session
     
     conn = psycopg2.connect(**db_info)
     cur = conn.cursor()
-    
-    if newPassword: ##check if the new password is provided
-        #if the new password is provided hash the new password using bcrypt
-        try:
-            new_hashed_password = bcrypt.hashpw(newPassword.encode('utf-8'), bcrypt.gensalt())
-            new_hashed_password_str = new_hashed_password.decode('utf-8')
-            query = sql.SQL("UPDATE users set password = %s WHERE accountid = %s") #query to update the password in the database
-            cur.execute(query, (new_hashed_password_str, accountid)) #execute the query with the new password and account ID as parameters
-            conn.commit()
-            return jsonify({'message': 'Password updated successfully'}), 201
-        except Exception as e: 
-            return jsonify({'message': f'Error updating password: {str(e)}'}),500
             
     if newFirstName: ##check if the new first name is provided
         try:
@@ -271,7 +258,43 @@ def editAccountDetails():
     #if no new email, password, first name or last name is provided return jsonify with error message
     cur.close()
     conn.close() 
-    return jsonify({'message': 'No new email, password, first name or last name provided to update.'}), 400
+    return jsonify({'message': 'No new email, first name or last name provided to update.'}), 400
+
+@app_bp.route('/updatePassword', methods = ['PUT'])
+def updatePassword():
+    data = request.get_json()
+    currentPassword = data.get('currentPassword') #get current password from request data
+    newPassword = data.get('newPassword') #get new password from request data
+    accountid = session.get('accountid') #get the account ID from the session
+
+    conn = psycopg2.connect(**db_info) #connect to db  
+    cur = conn.cursor() #create cursor
+    try:
+        query = sql.SQL("SELECT password FROM users WHERE accountid = %s") #query to get the password from the database
+        cur.execute(query, (accountid,)) #execute the query with the account ID as a parameter
+        resultPassword = cur.fetchone() #get the result of the query
+        
+        if resultPassword: #check if the result is not empty
+            #if the result is not empty get the password from the result
+            stored_hash= resultPassword[0]
+            if bcrypt.checkpw(currentPassword.encode('utf-8'), stored_hash.encode('utf-8')): #check if the input password matches the stored password
+                #if the password matches hash the new password and update it in the database
+                hashed_password = bcrypt.hashpw(newPassword.encode('utf-8'), bcrypt.gensalt())
+                hashed_password_str = hashed_password.decode('utf-8')
+                query = sql.SQL("UPDATE users SET password = %s WHERE accountid = %s") #query to update the password in the database
+                cur.execute(query, (hashed_password_str, accountid)) #execute the query with the new password and account ID as parameters
+                conn.commit()
+                return jsonify({'message': 'Password updated successfully'}), 201 #return success message if the password is updated successfully
+            else:
+                return jsonify({'message': 'Incorrect current Password'}), 401 #return error message if the current password does not match
+        else:
+            return jsonify({'message': 'Account ID not found'}), 404
+        
+    except Exception as e:
+        return jsonify({'message': f'Error updating password: {str(e)}'}), 500
+         
+
+    
   
     
 #delete account route
@@ -315,9 +338,10 @@ def check_auth():
     #curl -X PUT http://127.0.0.1:5000/account/edit -H "Content-Type: application/json" -d "{\"lastName\": \"Maher\"}"
     #curl -X PUT http://127.0.0.1:5000/account/edit -H "Content-Type: application/json" -d "{\"newEmail\": \"newemail@example.com\"}"
     #curl -X POST http://127.0.0.1:5000/account/deleteAccount -H "Content-Type: application/json" -d "{\"email\": \"mikeymaher71@gmail.com\"}"
-    #curl -X POST http://127.0.0.1:5000/account/login -H "Content-Type: application/json" -d "{\"email\": \"mahermikey71@gmail.com\", \"password\": \"what\"}" -c cookies.txt
+    #curl -X POST http://127.0.0.1:5000/account/login -H "Content-Type: application/json" -d "{\"email\": \"opticgorilla34@gmail.com\", \"password\": \"password123\"}" -c cookies.txt
     #curl -i -X POST http://127.0.0.1:5000/account/logout -b cookies.txt -c cookies.txt
     #curl -X GET http://127.0.0.1:5000/account/viewAccountDetails -b cookies.txt
+    #curl -X PUT http://127.0.0.1:5000/account/updatePassword -H "Content-Type: application/json" -d "{\"currentPassword\": \"password123\", \"newPassword\": \"newpassword123\"}" -b cookies.txt
 
 #TESTING BLOG COMMANDS
     #curl -X POST http://127.0.0.1:5000/blog/createposts -H "Content-Type: application/json" -d "{\"title\": \"My New Blog Post\", \"content\": \"This is the content of the blog post.\", \"status\": \"draft\"}" -b cookies.txt
