@@ -10,6 +10,7 @@ import KnowledgeBase from './components/pages/KnowledgeBase';
 import VerifyEmail from './components/pages/VerifyEmail';
 import AccountPortal from './components/pages/AccountPortal';
 
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);  // State to track if the user is logged in
   const navigate = useNavigate();
@@ -80,10 +81,13 @@ function App() {
 
          <Route path='/account-portal' element={<AccountPortal />} />
 
+        <Route path="/blogs" element={<Blogs />} />
       </Routes>
     </>
   );
 }
+
+
 
 export default App;
 
