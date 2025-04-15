@@ -40,7 +40,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
         ) : (
           <>
             <Link to="/home" style={styles.link}>Home</Link>
-            <Link to="/blog" style={styles.link}>Blog</Link>
+            <Link to="/blogs" style={styles.link}>Blog</Link>
             <Link to="/create" style={styles.link}>Create Blog</Link>
             <Link to="/knowledge-base" style={styles.link}>Knowledge Base</Link>
             <Link to="/account-portal" style={styles.link}>Account</Link>

@@ -9,6 +9,7 @@ import Logout from './components/pages/Logout';  // Import Logout component
 import KnowledgeBase from './components/pages/KnowledgeBase';
 import VerifyEmail from './components/pages/VerifyEmail';
 import AccountPortal from './components/pages/AccountPortal';
+import Blogs from './components/pages/Blogs';
 
 
 function App() {
@@ -80,7 +81,8 @@ function App() {
          <Route path="/verify-email" element={<VerifyEmail />} />
 
          <Route path='/account-portal' element={<AccountPortal />} />
-         
+         <Route path='/blogs' element={<Blogs />} />
+
       </Routes>
     </>
   );
