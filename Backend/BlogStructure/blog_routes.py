@@ -25,10 +25,11 @@ app_bp = Blueprint('blog_routes', __name__)
 @app_bp.route('/createposts', methods = ['POST'])
 def create_post():
     userAccountid = session.get('accountid')
-    print(f"Account ID in session: {userAccountid}")
+    #print(f"Account ID in session: {userAccountid}")
     data = request.get_json()
     title = data.get('title')
     content = data.get('content')
+    status = data.get('status', 'draft')
     created_at = datetime.utcnow()
 
     if not title or not content:
@@ -37,12 +38,15 @@ def create_post():
     try: 
         conn = psycopg2.connect(**db_info)
         cur = conn.cursor()
-        userAccountid = session.get('accountid')
-        cur.execute("INSERT INTO blog (blogid, blogtitle, dbinstance, dateposted, accountid) VALUES (%s, %s, %s, %s, %s)", (idGen.genID(), title, content, created_at, userAccountid))
+        #userAccountid = session.get('accountid')
+        cur.execute("INSERT INTO blog (blogid, blogtitle, dbinstance, dateposted, accountid, status) VALUES (%s, %s, %s, %s, %s, %s)", (idGen.genID(), title, content, created_at, userAccountid, status ))
         conn.commit()
         cur.close()
         conn.close()
-        return jsonify({'message': 'Post successfully created!'}), 201
+        if status == 'published':
+            return jsonify({'message': 'Post successfully created!'}), 201
+        else:
+            return jsonify({'message': 'Post successfully created but not published!'}), 201
     except Exception as e:
         return jsonify({'message': f'Error creating post: {str(e)}'}), 500
     
@@ -53,14 +57,31 @@ def get_posts():
     try:
         conn = psycopg2.connect(**db_info)
         cur = conn.cursor()
-        cur.execute("SELECT blogtitle, dbinstance, dateposted, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid ORDER by dateposted DESC")
+        cur.execute("SELECT blogtitle, dbinstance, dateposted, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' ORDER by dateposted DESC")
         posts = cur.fetchall()
         cur.close()
         conn.close()
-        posts_data = [{"title": post[0], "content": post[1], "date": post[2].strftime("%Y-%m-%d"), "firstName": post[3], "lastName": post[4]}for post in posts]
+        posts_data = [{"title": post[0], "content": post[1], "date": post[2].strftime("%Y-%m-%d"), "firstName": post[3], "lastName": post[4]} for post in posts]
         return jsonify(posts_data), 200
     except Exception as e:
         return jsonify({'message': f'Error retrieving posts: {str(e)}'}), 500
+
+@app_bp.route('/get-single-post/<int:id>', methods = ['GET'])
+def single_post(id):
+    accountid = session.get('accountid')
+    try:
+        conn = psycopg2.connect(**db_info)
+        cur = conn.cursor()
+        cur.execute("SELECT blogtitle, dbinstance, status FROM blog WHERE blogid = %s AND accountid = %s",(id, accountid))
+        post = cur.fetchone()
+        cur.close()
+        conn.close()
+        if post:
+            return jsonify({"title": post[0],"content": post[1],"status": post[2]}), 200
+        else:
+            return jsonify({'message': 'Post not found'}), 404
+    except Exception as e:
+        return jsonify({'message': f'Error retrieving post: {str(e)}'}), 500
    
 
 #update existing blog post

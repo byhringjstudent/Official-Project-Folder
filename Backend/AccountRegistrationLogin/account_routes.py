@@ -170,6 +170,43 @@ def viewAccountDetails():
     except Exception as e: 
         return jsonify({'message': f'Error retrieving account details: {str(e)}'}),500 #return error message if there is an error retrieving the account details
 
+@app_bp.route('/blog-posts', methods = ['get'])
+def get_blog_posts():
+    accountid = session.get('accountid') #get the account ID from the session
+    if not accountid: #check if the account ID is not in the session    
+        return jsonify({'message': 'User not logged in'}), 401 #if the account ID is not in the session return jsonify with error message and 401 status code
+    try:
+        conn = psycopg2.connect(**db_info)
+        cur = conn.cursor()
+        cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, status FROM blog WHERE accountid = %s", (accountid,)) #query to get the blog posts from the database
+        posts = cur.fetchall() #get the result of the query
+        cur.close()
+        conn.close()
+        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%Y-%m-%d"), "status": post[4]} for post in posts] #format the result into a list of dictionaries
+        return jsonify(posts_data), 200 #return success message with the blog posts 
+    except Exception as e:
+        return jsonify({'message': f'Error retrieving blog posts: {str(e)}'}), 500
+
+@app_bp.route('/draft-blog-posts', methods = ['get'])
+def get_draft_posts():
+    accountid = session.get('accountid') #get the account ID from the session
+    if not accountid: #check if the account ID is not in the session    
+        return jsonify({'message': 'User not logged in'}), 401 #if the account ID is not in the session return jsonify with error message and 401 status code
+    try:
+        conn = psycopg2.connect(**db_info)
+        cur = conn.cursor()
+        cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, status FROM blog WHERE accountid = %s AND status = %s", (accountid, 'draft')) #query to get the blog posts from the database
+        posts = cur.fetchall() #get the result of the query
+        cur.close()
+        conn.close()
+        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%Y-%m-%d"), "status": post[4]} for post in posts] #format the result into a list of dictionaries
+        return jsonify(posts_data), 200 #return success message with the blog posts 
+    except Exception as e:
+        return jsonify({'message': f'Error retrieving blog posts: {str(e)}'}), 500
+       
+
+
+    
 
 #edit account details route    
 @app_bp.route('/edit', methods = ['PUT'])
@@ -260,6 +297,13 @@ def deleteAccount():
     
     except Exception as e: 
         return jsonify({'message': f'Error deleting account: {str(e)}'}),500
+
+@app_bp.route('/check-auth', methods = ['GET'])
+def check_auth():
+    if 'accountid' in session:
+        return jsonify({'loggedIn': True}), 200
+    else:
+        return jsonify({'loggedIn': False}), 401
     
 
 #CURL COMMANDS FOR TESTING DIFFERENT ROUTES 
@@ -276,7 +320,7 @@ def deleteAccount():
     #curl -X GET http://127.0.0.1:5000/account/viewAccountDetails -b cookies.txt
 
 #TESTING BLOG COMMANDS
-    #curl -X POST http://127.0.0.1:5000/blog/createposts -H "Content-Type: application/json" -d "{\"title\": \"My New Blog Post\", \"content\": \"This is the content of the blog post.\"}" -b cookies.txt
+    #curl -X POST http://127.0.0.1:5000/blog/createposts -H "Content-Type: application/json" -d "{\"title\": \"My New Blog Post\", \"content\": \"This is the content of the blog post.\", \"status\": \"draft\"}" -b cookies.txt
     #curl -X PUT http://127.0.0.1:5000/blog/updateposts -H "Content-Type: application/json" -d "{\"title\": \"My New Blog Post\", \"content\": \"This is the content of the blog post.\"}" -b cookies.txt
     #curl -X PUT http://127.0.0.1:5000/blog/updateposts/24726 -H "Content-Type: application/json" -d "{\"title\": \"My Updated blog Post\", \"content\": \"Updated content for the blog post.\"}"
     #curl -X DELETE http://127.0.0.1:5000/blog/deleteposts/24726 

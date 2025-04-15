@@ -67,9 +67,9 @@ def verify_email(token):
         conn.commit()
         cur.close()
         conn.close()
-        return jsonify({"message": "Your email address has been successfully verified!"}) #returning success message
+        return render_template('verification_success.html', message="Your email address has been successfully verified!")
     else:
-        return jsonify({"error":"Sorry, your verification link is invalid or expired."})
+        return render_template('verification_error.html', message="Sorry, your verification link is invalid or expired.")
  
 def confirm_token(token, expiration = 3600): #confirming the token
     try:
