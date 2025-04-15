@@ -1,0 +1,51 @@
+.account-page {
+    display: flex;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-right: 1px solid #ddd;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .search-bar {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .menu h4 {
+    margin-top: 1.5rem;
+    color: #666;
+  }
+  
+  .menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .menu ul li {
+    margin: 0.5rem 0;
+  }
+  
+  .menu ul li a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .account-content {
+    flex: 1;
+    padding: 2rem;
+  }
+  

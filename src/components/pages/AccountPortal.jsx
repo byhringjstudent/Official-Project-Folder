@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import './AccountPortal.css'; // Optional: Make sure Home.css styles exist
 
 export default function AccountPortal() {
     const [user, setUser] = React.useState(null);
