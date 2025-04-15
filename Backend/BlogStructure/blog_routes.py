@@ -12,7 +12,8 @@ Updated/Connected routes to main Flask app in backend folder
 
 from flask import request, jsonify, session, Blueprint, render_template
 from flaskAppConfig import db_info
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from psycopg2 import sql
 import psycopg2
 from utils import uniqueID
@@ -30,7 +31,8 @@ def create_post():
     title = data.get('title')
     content = data.get('content')
     status = data.get('status', 'draft')
-    created_at = datetime.utcnow()
+    utc_created_at = datetime.now(timezone.utc)
+    created_at = utc_created_at.astimezone(ZoneInfo("America/Chicago"))
 
     if not title or not content:
         return jsonify({'message': 'Title and content are required!'}), 400
@@ -93,7 +95,8 @@ def update_post(id):
     if not new_title and not new_content:
         return jsonify({'message': 'Need to update title or content to update blog post!'}), 400
     
-    time_updated = datetime.utcnow()
+    utc_time_updated = datetime.now(timezone.utc)
+    time_updated = utc_time_updated.astimezone(ZoneInfo("America/Chicago"))
     try:
         conn = psycopg2.connect(**db_info)
         cur = conn.cursor()
