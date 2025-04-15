@@ -80,8 +80,7 @@ function App() {
          <Route path="/verify-email" element={<VerifyEmail />} />
 
          <Route path='/account-portal' element={<AccountPortal />} />
-
-        <Route path="/blogs" element={<Blogs />} />
+         
       </Routes>
     </>
   );

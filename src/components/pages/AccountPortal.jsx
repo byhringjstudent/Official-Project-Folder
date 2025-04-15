@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './AccountPortal.css';
 import { useNavigate } from 'react-router-dom';
 
-const navigate = useNavigate();
-navigate('/blogs'); // useNavigate from 'react-router-dom'
+
+
 
 const AccountPortal = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
