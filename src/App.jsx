@@ -8,6 +8,7 @@ import Register from './components/pages/Register';
 import Logout from './components/pages/Logout';  // Import Logout component
 import KnowledgeBase from './components/pages/KnowledgeBase';
 import VerifyEmail from './components/pages/VerifyEmail';
+import AccountPortal from './components/pages/AccountPortal';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);  // State to track if the user is logged in
@@ -76,6 +77,8 @@ function App() {
 
          {/* Email Verification Route */}
          <Route path="/verify-email" element={<VerifyEmail />} />
+
+         <Route path='/account-portal' element={<AccountPortal />} />
 
       </Routes>
     </>
