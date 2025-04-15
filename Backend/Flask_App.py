@@ -6,7 +6,7 @@ from BlogStructure import blog_routes
 from EmailVerification import email_verification_routes
 from flaskAppConfig import Config
 import os
-
+import psycopg2
 
 def create_app(config_class=Config): # creating the app with the config class
     app = Flask(__name__)
