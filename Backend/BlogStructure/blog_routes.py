@@ -1,15 +1,3 @@
-"""
-Author :Jaden
-Date   :April 5, 2025
-Purpose:This file defines the CRUD operations for the blog post.
-"""
-"""
-Edit made by Michael 
-Date: April 9, 2025
-Purpose: Connected logic to database to store/retreive blog posts.
-Updated/Connected routes to main Flask app in backend folder
-"""
-
 from flask import request, jsonify, session, Blueprint, render_template
 from flaskAppConfig import db_info
 from datetime import datetime, timezone
