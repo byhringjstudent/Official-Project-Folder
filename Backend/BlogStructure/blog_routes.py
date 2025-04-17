@@ -51,7 +51,7 @@ def get_posts():
         posts = cur.fetchall()
         cur.close()
         conn.close()
-        posts_data = [{"title": post[0], "content": post[1], "date": post[2].strftime("%Y-%m-%d"), "firstName": post[3], "lastName": post[4]} for post in posts]
+        posts_data = [{"title": post[0], "content": post[1], "date": post[2].strftime("%B %d, %Y"), "firstName": post[3], "lastName": post[4]} for post in posts]
         return jsonify(posts_data), 200
     except Exception as e:
         return jsonify({'message': f'Error retrieving posts: {str(e)}'}), 500
