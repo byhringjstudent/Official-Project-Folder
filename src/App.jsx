@@ -30,7 +30,7 @@ function App() {
         } else {
           setIsLoggedIn(false);  // Set to false if not ok
           localStorage.removeItem('isLoggedIn');  // Remove login status
-          if (window.location.pathname !== '/' && window.location.pathname !== '/register') {
+          if (window.location.pathname !== '/' && window.location.pathname !== '/register' && window.location.pathname !== '/login') {
             navigate('/');  // Redirect to login
           }
         }
@@ -38,7 +38,7 @@ function App() {
         console.error('Error verifying session:', error);
         setIsLoggedIn(false);
         localStorage.removeItem('isLoggedIn');
-        if (window.location.pathname !== '/' && window.location.pathname !== '/register') {
+        if (window.location.pathname !== '/' && window.location.pathname !== '/register' && window.location.pathname !== '/login') {
           navigate('/');
         }
       }
@@ -52,9 +52,10 @@ function App() {
     <>
       <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />  {/* Pass down isLoggedIn to Navbar */}
       <Routes>
+      <Route path="/" element={<Home />} />
         {/* Login Route */}
         <Route
-          path="/"
+          path="/login"
           element={<Login setIsLoggedIn={(val) => {
             setIsLoggedIn(val);  // Update state when logged in or logged out
             localStorage.setItem('isLoggedIn', val);  // Store login status in localStorage
@@ -64,7 +65,6 @@ function App() {
         {/* Only show these routes if logged in */}
         {isLoggedIn && (
           <>
-            <Route path="/home" element={<Home />} />
             <Route path="/create" element={<CreatePost />} />
           </>
         )}

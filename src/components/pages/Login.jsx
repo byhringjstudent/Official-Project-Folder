@@ -28,7 +28,7 @@ export default function Login({ setIsLoggedIn }) {
         setMessage('Login successful! Redirecting...');
         setIsLoggedIn(true);
         localStorage.setItem('isLoggedIn', 'true');
-        navigate('/home');
+        navigate('/');
       } else {
         setMessage(data.message || 'Login failed.');
       }

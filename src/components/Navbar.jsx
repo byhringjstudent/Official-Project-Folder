@@ -34,12 +34,13 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
       <div style={styles.links}>
         {!isLoggedIn ? (
           <>
-            <Link to="/" style={styles.link}>Login</Link>
+            <Link to="/" style={styles.link}>Home</Link>
+            <Link to="/login" style={styles.link}>Login</Link>
             <Link to="/register" style={styles.link}>Register</Link>
           </>
         ) : (
           <>
-            <Link to="/home" style={styles.link}>Home</Link>
+            <Link to="/" style={styles.link}>Home</Link>
             <Link to="/blogs" style={styles.link}>Blog</Link>
             <Link to="/create" style={styles.link}>Create Blog</Link>
             <Link to="/knowledge-base" style={styles.link}>Knowledge Base</Link>
