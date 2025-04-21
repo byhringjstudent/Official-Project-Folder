@@ -37,7 +37,7 @@ const AccountPortal = () => {
 
     const fetchUserBlogs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/account/userBlogs", {
+        const response = await fetch("http://localhost:5000/account/blog-posts", {
           method: 'GET',
           credentials: 'include',
         });

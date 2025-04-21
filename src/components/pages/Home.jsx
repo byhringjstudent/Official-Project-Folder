@@ -8,7 +8,7 @@ export default function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/blog/readposts', {
+        const response = await fetch('http://localhost:5000/blog/read-latest-posts', {
           method: 'GET',
           credentials: 'include',
         });

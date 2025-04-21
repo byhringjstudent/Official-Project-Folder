@@ -1,6 +1,7 @@
 from flask import request, jsonify, session, Blueprint, render_template
 from flaskAppConfig import db_info
 from datetime import datetime, timezone
+from pytz import timezone
 from zoneinfo import ZoneInfo
 from psycopg2 import sql
 import psycopg2
@@ -19,8 +20,7 @@ def create_post():
     title = data.get('title')
     content = data.get('content')
     status = data.get('status', 'draft')
-    utc_created_at = datetime.now(timezone.utc)
-    created_at = utc_created_at.astimezone(ZoneInfo("America/Chicago"))
+    created_at = datetime.now(timezone('America/Chicago'))
 
     if not title or not content:
         return jsonify({'message': 'Title and content are required!'}), 400
@@ -56,6 +56,21 @@ def get_posts():
     except Exception as e:
         return jsonify({'message': f'Error retrieving posts: {str(e)}'}), 500
 
+#read last 3 blog posts
+@app_bp.route('/read-latest-posts', methods = ['GET'])
+def get_latest_posts():
+    try:
+        conn = psycopg2.connect(**db_info)
+        cur = conn.cursor()
+        cur.execute("SELECT blogtitle, dbinstance, dateposted, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' ORDER by dateposted DESC")
+        posts = cur.fetchmany(size=3)
+        cur.close()
+        conn.close()
+        posts_data = [{"title": post[0], "content": post[1], "date": post[2].strftime("%B %d, %Y"), "firstName": post[3], "lastName": post[4]} for post in posts]
+        return jsonify(posts_data), 200
+    except Exception as e:
+        return jsonify({'message': f'Error retrieving posts: {str(e)}'}), 500
+    
 @app_bp.route('/get-single-post/<int:id>', methods = ['GET'])
 def single_post(id):
     accountid = session.get('accountid')
