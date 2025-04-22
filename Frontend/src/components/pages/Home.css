@@ -1,128 +1,170 @@
-.landing-page {
-    font-family: 'Segoe UI', sans-serif;
-    color: #1c1c1c;
-    line-height: 1.6;
-    max-width: 1100px;
-    margin: auto;
-    background-color: white;
-  }
-  
-  section {
-    padding: 3rem 2rem;
-    text-align: center;
-    border-top: 4px solid #e0e0e0;
-  }
-  
-  .hero-section {
-    background-color: #f2c94c;
-    padding: 5rem 2rem;
-    border-top: none;
-  }
-  
-  .feature-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    background-color: #ffffff;
-    gap: 2rem;
-  }
-  
-  .feature-section div {
-    flex: 1;
-    min-width: 300px;
-  }
-  
-  .security-section {
-    background-color: #ecf0f1;
-  }
-  
-  .agent-section {
-    background-color: #f5f8fa;
-  }
-  
-  .agent-cards {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    margin-top: 2rem;
-  }
-  
-  .agent-cards .card {
-    flex: 1;
-    min-width: 250px;
-    background: #ffffff;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    font-weight: bold;
-  }
-  
-  .testimonials-section {
-    background-color: #f5f8fa;
-  }
-  
-  .testimonials-section blockquote {
-    font-style: italic;
-    margin: 1rem 0;
-  }
-  
-  .blog-section {
-    background-color: #ffffff;
-  }
-  
-  .post-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  
-  .post {
-    background: #fff;
-    border: 2px solid #ccc;
-    padding: 1.2rem;
-    border-radius: 6px;
-    text-align: left;
-  }
-  
-  .cta-section {
-    background-color: #223a5e;
-    color: white;
-    padding: 3rem 2rem;
-  }
-  
-  .cta-section input {
-    padding: 0.6rem;
-    width: 250px;
-    margin: 1rem;
-    border-radius: 4px;
-    border: none;
-  }
-  
-  .cta-section button {
-    padding: 0.6rem 1.2rem;
-    background: #f2c94c;
-    color: #1c1c1c;
-    font-weight: bold;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .footer {
-    text-align: center;
-    padding: 2rem;
-    background: #223a5e;
-    color: white;
-    border-top: 4px solid #f2c94c;
-  }
+/* Global Styles */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #2C3E50; /* Navy Blue background */
+  font-family: 'Segoe UI', sans-serif;
+  color: #1c1c1c;
+}
 
-  .feature-image img {
-    width: 300px;
-    height: 100%;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-  
+/* Main Page Container */
+.landing-page {
+  max-width: 1440px; /* Wider for desktop */
+  margin: 2rem auto;
+  background-color: #ffffff;
+  padding: 3rem 3rem; /* Increased padding */
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.04);
+  line-height: 1.6;
+}
+
+/* Generic Section Styling */
+section {
+  background-color: #ffffff;
+  padding: 3rem 2rem;
+  text-align: center;
+  border: 2px solid #F1C40F; /* Gold border */
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+/* Hero Section */
+.hero-section {
+  background-color: #f2c94c;
+  padding: 5rem 2rem;
+  border: 2px solid #F1C40F;
+  border-radius: 10px;
+}
+
+/* Feature Section */
+.feature-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: #ffffff;
+  gap: 2rem;
+}
+
+.feature-section div {
+  flex: 1;
+  min-width: 340px; /* Slightly wider */
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border: 2px solid #F1C40F;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Security and Agent Sections */
+.security-section {
+  background-color: #ecf0f1;
+}
+
+.agent-section {
+  background-color: #f5f8fa;
+}
+
+/* Agent Cards */
+.agent-cards {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.agent-cards .card {
+  flex: 1;
+  min-width: 340px;
+  background: #ffffff;
+  padding: 1.5rem;
+  border: 2px solid #F1C40F;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+/* Testimonials */
+.testimonials-section {
+  background-color: #f5f8fa;
+}
+
+.testimonials-section blockquote {
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+/* Blog Section */
+.blog-section {
+  background-color: #ffffff;
+}
+
+/* Blog Post List */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.post {
+  background: #fff;
+  border: 2px solid #F1C40F;
+  padding: 1.2rem;
+  border-radius: 10px;
+  text-align: left;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* CTA Section */
+.cta-section {
+  background-color: #2C3E50; /* Navy Blue */
+  color: white;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.cta-section input {
+  padding: 0.6rem;
+  width: 250px;
+  margin: 1rem;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+}
+
+.cta-section button {
+  padding: 0.6rem 1.5rem;
+  background: #F1C40F;
+  color: #2C3E50;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.cta-section button:hover {
+  background: #d4ac0d;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  background: #2C3E50;
+  color: white;
+  border-top: 4px solid #F1C40F;
+}
+
+/* Feature Images */
+.feature-image img {
+  width: 300px;
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
