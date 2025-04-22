@@ -26,26 +26,36 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
 
   return (
     <nav style={styles.nav}>
-      <div style={styles.brand}>
-        <span style={styles.logoText}>LegacyIQ</span>
-        <i className="fi fi-bs-drafting-compass" style={styles.icon}></i>
+      {/* Left side: Create Blog link */}
+      <div style={styles.left}>
+        {isLoggedIn && (
+          <Link to="/create" style={styles.link}>
+            Create Blog
+          </Link>
+        )}
       </div>
 
-      <div style={styles.links}>
+      {/* Right side: Ordered links with bars */}
+      <div style={styles.right}>
         {!isLoggedIn ? (
           <>
             <Link to="/" style={styles.link}>Home</Link>
+            <span style={styles.bar}>|</span>
             <Link to="/login" style={styles.link}>Login</Link>
+            <span style={styles.bar}>|</span>
             <Link to="/register" style={styles.link}>Register</Link>
           </>
         ) : (
           <>
-            <Link to="/" style={styles.link}>Home</Link>
-            <Link to="/blogs" style={styles.link}>Blog</Link>
-            <Link to="/create" style={styles.link}>Create Blog</Link>
-            <Link to="/knowledge-base" style={styles.link}>Knowledge Base</Link>
-            <Link to="/account-portal" style={styles.link}>Account</Link>
             <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
+            <span style={styles.bar}>|</span>
+            <Link to="/account-portal" style={styles.link}>Account</Link>
+            <span style={styles.bar}>|</span>
+            <Link to="/knowledge-base" style={styles.link}>Knowledge Base</Link>
+            <span style={styles.bar}>|</span>
+            <Link to="/blogs" style={styles.link}>Blog</Link>
+            <span style={styles.bar}>|</span>
+            <Link to="/" style={styles.link}>Home</Link>
           </>
         )}
       </div>
@@ -58,38 +68,36 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#333',
+    backgroundColor: '#2C3E50',
     padding: '10px 20px',
     color: 'white',
+    borderBottom: '4px solid #F1C40F',
   },
-  brand: {
+  left: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  right: {
     display: 'flex',
     alignItems: 'center',
     gap: '10px',
-  },
-  logoText: {
-    margin: 0,
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-  },
-  icon: {
-    fontSize: '20px',
-    color: 'white',
-  },
-  links: {
-    display: 'flex',
-    gap: '15px',
+    flexWrap: 'wrap',
   },
   link: {
     color: 'white',
     textDecoration: 'none',
     fontWeight: 'bold',
   },
+  bar: {
+    color: '#F1C40F',
+    fontWeight: 'bold',
+    padding: '0 6px',
+  },
   logoutBtn: {
     backgroundColor: 'transparent',
     border: 'none',
     color: 'white',
-    cursor: 'pointer',
     fontWeight: 'bold',
+    cursor: 'pointer',
   },
 };
