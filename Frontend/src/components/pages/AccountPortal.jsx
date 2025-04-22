@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './AccountPortal.css';
 import { useNavigate } from 'react-router-dom';
 
-
-
-
 const AccountPortal = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -12,7 +9,6 @@ const AccountPortal = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // New blog state
   const [title, setTitle] = useState('');
   const [shortDesc, setShortDesc] = useState('');
   const [tagInput, setTagInput] = useState('');
@@ -68,6 +64,15 @@ const AccountPortal = () => {
     }
   };
 
+  const resetForm = () => {
+    setTitle('');
+    setShortDesc('');
+    setTags([]);
+    setTagInput('');
+    setImage(null);
+    setImagePreview(null);
+  };
+
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append('title', title);
@@ -83,14 +88,31 @@ const AccountPortal = () => {
       });
 
       if (!response.ok) throw new Error('Blog creation failed');
-
       alert('Blog published successfully!');
-      setTitle('');
-      setShortDesc('');
-      setTags([]);
-      setTagInput('');
-      setImage(null);
-      setImagePreview(null);
+      resetForm();
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('shortDescription', shortDesc);
+    formData.append('tags', JSON.stringify(tags));
+    formData.append('image', image);
+    formData.append('draft', true); // Optional field for backend
+
+    try {
+      const response = await fetch('http://localhost:5000/blog/save-draft', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Saving draft failed');
+      alert('Draft saved successfully!');
+      resetForm();
     } catch (err) {
       alert('Error: ' + err.message);
     }
@@ -126,11 +148,11 @@ const AccountPortal = () => {
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Verified:</strong> {user.verifiedemail ? 'Yes' : 'No'}</p>
 
-        <hr style={{ margin: '2rem 0' }} />
+        <hr />
 
         <h3>Your Blog Posts</h3>
         {blogs.length === 0 ? (
-          <p></p>
+          <p>No blog posts yet.</p>
         ) : (
           blogs.map((blog) => (
             <div key={blog.id} className="user-blog-preview">
@@ -142,53 +164,53 @@ const AccountPortal = () => {
           ))
         )}
 
-        <hr style={{ margin: '3rem 0 1rem' }} />
+        <hr />
         <h3>Create New Blog</h3>
+        <div className="blog-form-section">
+          {imagePreview && (
+            <img src={imagePreview} alt="Preview" className="preview-image" />
+          )}
+          <h4>{title || 'Your Blog Title'}</h4>
+          <p>{shortDesc || 'Your short description will appear here.'}</p>
 
-        {/* Preview Section */}
-        {imagePreview && (
-          <img src={imagePreview} alt="Preview" className="preview-image" />
-        )}
-        <h4>{title || 'Your Blog Title'}</h4>
-        <p>{shortDesc || 'Your short description will appear here.'}</p>
+          <input
+            type="text"
+            placeholder="Blog Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
 
-        {/* Blog Form */}
-        <input
-          type="text"
-          placeholder="Blog Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+          <textarea
+            placeholder="Short Description about your post"
+            value={shortDesc}
+            onChange={(e) => setShortDesc(e.target.value)}
+            maxLength={150}
+          />
 
-        <textarea
-          placeholder="Short Description about your post"
-          value={shortDesc}
-          onChange={(e) => setShortDesc(e.target.value)}
-          maxLength={150}
-        />
+          <input
+            type="text"
+            placeholder="Enter topic and press Enter"
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={handleAddTag}
+          />
 
-        <input
-          type="text"
-          placeholder="Enter topic and press Enter"
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={handleAddTag}
-        />
+          <div className="tag-list">
+            {tags.map((tag, i) => (
+              <span key={i} className="tag-chip">{tag}</span>
+            ))}
+          </div>
 
-        <div className="tag-list">
-          {tags.map((tag, i) => (
-            <span key={i} className="tag-chip">{tag}</span>
-          ))}
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+            <button onClick={handleSubmit} className="publish-button">Publish</button>
+            <button onClick={handleSaveDraft} className="draft-button">Save as Draft</button>
+          </div>
         </div>
-
-        <input type="file" accept="image/*" onChange={handleImageChange} />
-
-        <button onClick={handleSubmit} className="publish-button">Publish</button>
       </main>
     </div>
   );
 };
-
-
 
 export default AccountPortal;
