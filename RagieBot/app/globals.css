@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+@layer base {
+  :root {
+    --background: 240, 5%, 96%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .markdown {
+    @apply leading-relaxed text-gray-800 dark:text-gray-100;
+  }
+
+  .markdown h1 {
+    @apply text-4xl font-bold mb-4;
+  }
+
+  .markdown h2 {
+    @apply text-3xl font-semibold mb-3;
+  }
+
+  .markdown h3 {
+    @apply text-2xl font-medium mb-2;
+  }
+
+  .markdown h4 {
+    @apply text-xl font-medium mb-2;
+  }
+
+  .markdown p {
+    @apply mb-4;
+  }
+
+  .markdown ul {
+    @apply list-disc pl-6 mb-4;
+  }
+
+  .markdown ol {
+    @apply list-decimal pl-6 mb-4;
+  }
+
+  .markdown li {
+    @apply mb-1;
+  }
+
+  .markdown blockquote {
+    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-600 dark:text-gray-300 my-4;
+  }
+
+  .markdown pre {
+    @apply bg-gray-900 text-gray-100 text-sm font-mono p-4 rounded overflow-x-auto my-4;
+  }
+
+  .markdown code {
+    @apply bg-gray-100 dark:bg-gray-800 text-sm font-mono px-1 py-0.5 rounded;
+  }
+
+  .markdown a {
+    @apply text-blue-600 dark:text-blue-400 hover:underline;
+  }
+
+  .markdown img {
+    @apply rounded shadow-md my-4 max-w-full h-auto;
+  }
+
+  .markdown hr {
+    @apply border-t my-6;
+  }
+
+  .markdown table {
+    @apply table-auto border-collapse w-full my-4;
+  }
+
+  .markdown thead {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  .markdown tbody {
+    @apply divide-y divide-gray-200 dark:divide-gray-700;
+  }
+
+  .markdown tr {
+    @apply hover:bg-gray-50 dark:hover:bg-gray-700;
+  }
+
+  .markdown th {
+    @apply text-left p-2 font-medium border-b border-gray-200 dark:border-gray-600;
+  }
+
+  .markdown td {
+    @apply p-2 border-b border-gray-200 dark:border-gray-700;
+  }
+}
+
+/* avatar-1 is primary logo */
+.avatar-1 {
+  width: 100.41px;
+  height: 100px;
+  background: linear-gradient(90deg, #f5c3af 0%, #ea89d7 46.87%, #6767d9 100%) !important;
+  border-radius: 80px !important;
+}
+
+.avatar-2 {
+  width: 100.41px;
+  height: 100px;
+  background: linear-gradient(90deg, #f7d147 0%, #e7557c 100%) !important;
+  border-radius: 80px !important;
+}
+
+.avatar-3 {
+  width: 100.41px;
+  height: 100px;
+  background: linear-gradient(90deg, #4393f4 0%, #ec609c 50%, #ef8482 100%) !important;
+  border-radius: 80px !important;
+}

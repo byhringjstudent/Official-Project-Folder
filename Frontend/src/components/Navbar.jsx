@@ -47,7 +47,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
           </>
         ) : (
           <>
-            <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
+            <span onClick={handleLogout} style={styles.link}>Logout</span>
             <span style={styles.bar}>|</span>
             <Link to="/account-portal" style={styles.link}>Account</Link>
             <span style={styles.bar}>|</span>
@@ -87,17 +87,12 @@ const styles = {
     color: 'white',
     textDecoration: 'none',
     fontWeight: 'bold',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    padding: '0 6px',
   },
   bar: {
     color: '#F1C40F',
     fontWeight: 'bold',
-    padding: '0 6px',
-  },
-  logoutBtn: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: 'white',
-    fontWeight: 'bold',
-    cursor: 'pointer',
   },
 };
