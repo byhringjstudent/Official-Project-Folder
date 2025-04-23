@@ -1,43 +1,67 @@
 import React from 'react';
 
 export default function KnowledgeBase() {
+  const openBaseChat = () => {
+    window.open(
+      'https://sunbird-full-fully.ngrok-free.app',
+      'BaseChatWindow',
+      'width=1000,height=900'
+    );
+  };
+
   return (
     <div style={{ padding: '2rem' }}>
-      {/* Bordered Top Section */}
+      {/* Chat Bubble Greeting */}
       <div
         style={{
-          backgroundColor: '#fefefe',
-          border: '2px solid #F1C40F', // Gold Amber
-          borderRadius: '12px',
-          padding: '2rem',
-          marginBottom: '2rem',
-          maxWidth: '1000px',
-          marginInline: 'auto',
+          maxWidth: '900px',
+          margin: '0 auto 2rem auto',
+          padding: '1.5rem 2rem',
+          backgroundColor: '#808080',
+          color: 'white',
+          borderRadius: '20px',
+          position: 'relative',
+          fontSize: '1.25rem',
           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          lineHeight: '1.6',
         }}
       >
-        <h2 style={{ color: '#2C3E50', marginBottom: '0.5rem' }}>
-          Knowledge Base
-        </h2>
-        <p style={{ color: '#2C3E50', margin: 0 }}>
-          Ask questions about estate planning, trusts, wills, and more.
+        <p style={{ margin: 0 }}>
+          Hi! My name is <strong>Base Chat</strong>. I'm your personal Estate Planning AI Assistant.
+          Ask any questions about wills, trusts, or anything else — and don’t forget to log in to get started with your documents!
         </p>
+
+        {/* Triangle Tail */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 0,
+            height: 0,
+            borderLeft: '20px solid transparent',
+            borderRight: '20px solid transparent',
+            borderTop: '20px solid #808080',
+          }}
+        ></div>
       </div>
 
       {/* Chatbot iFrame Section */}
       <div
         style={{
           padding: '1.5rem',
-          background: '#f9f9f9',
+          background: '#f1C40f',
           border: '1px solid #ccc',
           borderRadius: '12px',
-          maxWidth: '1200px',
+          maxWidth: '2000px',
           marginInline: 'auto',
           boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
         }}
       >
         <iframe
-          src="http://localhost:3000" // Replace with deployed URL when ready
+          src="https://sunbird-full-fully.ngrok-free.app"
+          sandbox="allow-scripts allow-same-origin allow-forms"
           title="Ragie Chatbot"
           style={{
             width: '100%',

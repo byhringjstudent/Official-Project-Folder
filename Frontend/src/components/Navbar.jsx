@@ -25,15 +25,17 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   return (
-    <nav style={styles.nav}>
-      {/* Left side: Create Blog link */}
-      <div style={styles.left}>
-        {isLoggedIn && (
-          <Link to="/create" style={styles.link}>
-            Create Blog
+    /* {} */
+    /* {/* <nav style={styles.nav}> */
+       /* { Left side: Create Blog link } */
+      { /* <div style={styles.left}> }
+        /*  *//* {isLoggedIn && ( */
+          /* <Link to="/create" style={styles.link}>
+
           </Link>
         )}
-      </div>
+      </div> */  
+    
 
       {/* Right side: Ordered links with bars */}
       <div style={styles.right}>

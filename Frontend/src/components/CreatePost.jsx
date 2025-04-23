@@ -27,6 +27,7 @@ export default function CreatePost() {
     }
   };
 
+  /*
   return (
     <div>
       <h2>Create a New Post</h2>
@@ -38,5 +39,5 @@ export default function CreatePost() {
       </form>
       <p>{message}</p>
     </div>
-  );
+  ); */
 }
