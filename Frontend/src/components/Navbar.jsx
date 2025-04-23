@@ -25,18 +25,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   return (
-    /* {} */
-    /* {/* <nav style={styles.nav}> */
-       /* { Left side: Create Blog link } */
-      { /* <div style={styles.left}> }
-        /*  *//* {isLoggedIn && ( */
-          /* <Link to="/create" style={styles.link}>
-
-          </Link>
-        )}
-      </div> */  
-    
-
+    <nav style={styles.nav}>
       {/* Right side: Ordered links with bars */}
       <div style={styles.right}>
         {!isLoggedIn ? (
@@ -75,10 +64,6 @@ const styles = {
     padding: '10px 20px',
     color: 'white',
     borderBottom: '4px solid #F1C40F',
-  },
-  left: {
-    display: 'flex',
-    alignItems: 'center',
   },
   right: {
     display: 'flex',
