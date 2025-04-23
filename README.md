@@ -14,8 +14,9 @@ run "npm run dev"
 3. cd into RagieBot
 run "npm run dev -- -p 3001" not? 3000
 
-** ready to run our webhook in the terminal?
-** You do not need to generate a new webhook 
+Ready to run our webhook in the terminal?
+
+You do not need to generate a new webhook 
 every time we reboot the app, this is the
 purpose of our ngrok reserved domain. **
 
