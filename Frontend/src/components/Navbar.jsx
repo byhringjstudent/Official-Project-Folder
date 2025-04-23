@@ -47,15 +47,16 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
           </>
         ) : (
           <>
-            <span onClick={handleLogout} style={styles.link}>Logout</span>
-            <span style={styles.bar}>|</span>
-            <Link to="/account-portal" style={styles.link}>Account</Link>
-            <span style={styles.bar}>|</span>
-            <Link to="/knowledge-base" style={styles.link}>Knowledge Base</Link>
+            <Link to="/" style={styles.link}>Home</Link>
             <span style={styles.bar}>|</span>
             <Link to="/blogs" style={styles.link}>Blog</Link>
             <span style={styles.bar}>|</span>
-            <Link to="/" style={styles.link}>Home</Link>
+            <Link to="/knowledge-base" style={styles.link}>Knowledge Base</Link>
+            <span style={styles.bar}>|</span>
+            <Link to="/account-portal" style={styles.link}>Account</Link>
+            <span style={styles.bar}>|</span>
+            <span onClick={handleLogout} style={styles.link}>Logout</span>
+            <span style={styles.bar}>|</span>
           </>
         )}
       </div>
