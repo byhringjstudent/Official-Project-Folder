@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import './Home.css'; // Optional: Make sure Home.css styles exist
 
@@ -15,8 +16,8 @@ export default function Home() {
 
         if (response.ok) {
           const data = await response.json();
-          if (Array.isArray(data) && data.length > 0) {
-            setPosts(data);
+          if (Array.isArray(data.posts) && data.posts.length > 0) {
+            setPosts(data.posts);
             setMessage('');
           } else {
             setMessage('No posts available');
@@ -40,7 +41,7 @@ export default function Home() {
       
       {/* Section 6: Blog Post Feed */}
       <section className="blog-section">
-        <h2>Latest Blog Posts</h2>
+        <h2>Blog Posts</h2>
         {message && <p>{message}</p>}
         {!message && posts.length === 0 && <p>No posts available.</p>}
 
@@ -49,11 +50,28 @@ export default function Home() {
             {posts.map((post, index) => (
               <div key={index} className="post">
                 <h3>{post.title}</h3>
+                <p>{post.shortdescription}</p>
+                <small>
+                  {post.tags.map((tag, index) => (
+                    <span key={index} className="tag-badge">
+                      {tag}
+                    </span>
+                  ))}
+                </small>
                 <p>{post.content}</p>
                 <small>{new Date(post.date).toLocaleDateString()}</small>
                 <p>
                   <strong>Posted by:</strong> {post.firstName} {post.lastName}
                 </p>
+
+                {/* Display Image */}
+                {post.image_url && (
+                  <img
+                    src={`http://localhost:5000${post.image_url}`} // Adjust the URL as needed
+                    alt="Blog Post"
+                    className="post-image"
+                  />
+                )}
               </div>
             ))}
           </div>

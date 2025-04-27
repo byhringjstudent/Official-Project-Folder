@@ -6,10 +6,10 @@ Ports List:
 3000, 3001, 5000, 5173
 
 1. cd into Frontend
-run "Python Flask_App.py"
+run "npm run dev"
 
 2. cd into Backend
-run "npm run dev"
+run "Python Flask_App.py"
 
 3. cd into RagieBot
 run "npm run dev -- -p 3001" not? 3000

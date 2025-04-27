@@ -34,7 +34,9 @@ export default function Register() {
         localStorage.removeItem('isLoggedIn');
         sessionStorage.removeItem('isLoggedIn');
         document.cookie = 'sessionid=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
-        navigate('/');
+        setTimeout(() => {
+          navigate('/');
+        }, 1500); // 1500 milliseconds = 1.5 seconds
       } else {
         setMessage(data.message || 'Something went wrong.');
       }

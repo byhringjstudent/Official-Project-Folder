@@ -7,6 +7,28 @@
   color: #fff;
 }
 
+/* delete-button */
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  float: right; /* Aligns the button content to the left */
+  margin-top: 10px; /* Optional */
+}
+
+/*edit button*/
+.edit-button {
+  background-color: #F1C40F;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  float: right; /* Aligns the button content to the left */
+  margin-top: 10px; /* Optional */
+}
+
 /* Sidebar */
 .sidebar {
   width: 360px;

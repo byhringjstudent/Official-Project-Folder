@@ -10,8 +10,10 @@ const AccountPortal = () => {
   const [error, setError] = useState(null);
 
   const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const [shortDesc, setShortDesc] = useState('');
   const [tagInput, setTagInput] = useState('');
+  const [status, setStatus] = useState('draft');
   const [tags, setTags] = useState([]);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -66,6 +68,7 @@ const AccountPortal = () => {
 
   const resetForm = () => {
     setTitle('');
+    setContent('');
     setShortDesc('');
     setTags([]);
     setTagInput('');
@@ -73,15 +76,17 @@ const AccountPortal = () => {
     setImagePreview(null);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (status) => {
     const formData = new FormData();
     formData.append('title', title);
+    formData.append('content', content);
     formData.append('shortDescription', shortDesc);
     formData.append('tags', JSON.stringify(tags));
     formData.append('image', image);
+    formData.append('status', status)
 
     try {
-      const response = await fetch('http://localhost:5000/blog/create', {
+      const response = await fetch('http://localhost:5000/blog/createposts', {
         method: 'POST',
         credentials: 'include',
         body: formData,
@@ -95,28 +100,55 @@ const AccountPortal = () => {
     }
   };
 
-  const handleSaveDraft = async () => {
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('shortDescription', shortDesc);
-    formData.append('tags', JSON.stringify(tags));
-    formData.append('image', image);
-    formData.append('draft', true); // Optional field for backend
+  const handleSaveDraft = () => {
+    handleSubmit('draft'); // Call handleSubmit with 'draft'
+  };
+  
+  const handlePublish = () => {
+    handleSubmit('published'); // Call handleSubmit with 'publish'
+  };
 
-    try {
-      const response = await fetch('http://localhost:5000/blog/save-draft', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-      });
+  const deleteBlog = async (blogID) => {
+    const response = await fetch(`http://localhost:5000/blog/deleteposts/${blogID}`, {
+      method: 'DELETE', // DELETE method
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-      if (!response.ok) throw new Error('Saving draft failed');
-      alert('Draft saved successfully!');
-      resetForm();
-    } catch (err) {
-      alert('Error: ' + err.message);
+  
+    if (response.ok) {
+      // Remove the blog from the UI after deletion
+      setBlogs(blogs.filter(blog => blog.blogID !== blogID));
+    } else {
+      const data = await response.json();
+      alert(data.message || 'Failed to delete post');
     }
   };
+  
+  const handleRemoveTag = (tagToRemove) => {
+    const updatedTags = tags.filter(tag => tag !== tagToRemove);
+    setTags(updatedTags);
+  };
+  
+
+  const editBlog = async (blogID) => {
+    const response = await fetch(`http://localhost:5000/blog/updateposts/${blogID}`, {
+      method: 'PUT', // Use PUT or PATCH for updating
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title, content, shortDesc, tags, status }),
+    });
+  
+    if (response.ok) {
+      alert('Blog edited successfully!');
+    } else {
+      const data = await response.json();
+      alert(data.message || 'Failed to edit post');
+    }
+  };
+
 
   if (loading) return <div>Loading account...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -138,6 +170,7 @@ const AccountPortal = () => {
           <ul>
             <li><a href="/edit-profile">👤 Edit Profile</a></li>
             <li><a href="/change-password">🔒 Change Password</a></li>
+            <li><a href="/account-deletion">🔒 Delete Account</a></li>
           </ul>
         </nav>
       </aside>
@@ -155,10 +188,25 @@ const AccountPortal = () => {
           <p>No blog posts yet.</p>
         ) : (
           blogs.map((blog) => (
-            <div key={blog.id} className="user-blog-preview">
+            <div key={blog.blogID} className="user-blog-preview">
               <h4>{blog.title}</h4>
-              <p>{blog.shortDescription}</p>
-              <a href={`/blog/${blog.id}`}>Read more →</a>
+              <p>{blog.shortdescription}</p>
+              <small>{new Date(blog.date).toLocaleDateString()}</small>
+              <p></p>
+              <p>{blog.status}</p>
+              <a href={`/blog/${blog.blogID}`}>Read more →</a>
+               {/* Delete button */}
+               <button onClick={() => deleteBlog(blog.blogID)}
+                className="delete-button"
+                >
+                Delete
+               </button>
+               {/* Edit button */}
+               <button onClick={() => navigate(`/edit-post/${blog.blogID}`)} className="edit-button">
+                Edit
+               </button>
+
+
               <hr />
             </div>
           ))
@@ -187,6 +235,13 @@ const AccountPortal = () => {
             maxLength={150}
           />
 
+          <textarea
+            type="text"
+            placeholder="Content of your post"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+
           <input
             type="text"
             placeholder="Enter topic and press Enter"
@@ -200,11 +255,20 @@ const AccountPortal = () => {
               <span key={i} className="tag-chip">{tag}</span>
             ))}
           </div>
+          <div className="tag-list">
+        {tags.map((tag, i) => (
+            <span key={i} className="tag-chip">
+            {tag}
+            <button onClick={() => handleRemoveTag(tag)}>X</button>  {/* Add a button to remove tag */}
+            </span>
+        ))}
+        </div>
+          
 
           <input type="file" accept="image/*" onChange={handleImageChange} />
 
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <button onClick={handleSubmit} className="publish-button">Publish</button>
+            <button onClick={handlePublish} className="publish-button">Publish</button>
             <button onClick={handleSaveDraft} className="draft-button">Save as Draft</button>
           </div>
         </div>
@@ -214,3 +278,4 @@ const AccountPortal = () => {
 };
 
 export default AccountPortal;
+

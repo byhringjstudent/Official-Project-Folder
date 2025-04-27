@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Home.css'; // Optional: Make sure Home.css styles exist
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -15,8 +16,8 @@ export default function Home() {
 
         if (response.ok) {
           const data = await response.json();
-          if (Array.isArray(data) && data.length > 0) {
-            setPosts(data);
+          if (Array.isArray(data.posts) && data.posts.length > 0) {
+            setPosts(data.posts);
             setMessage('');
           } else {
             setMessage('No posts available');
@@ -105,11 +106,28 @@ export default function Home() {
             {posts.map((post, index) => (
               <div key={index} className="post">
                 <h3>{post.title}</h3>
+                <p>{post.shortdescription}</p>
+                <small>
+                  {post.tags.map((tag, index) => (
+                    <span key={index} className="tag-badge">
+                      {tag}
+                    </span>
+                  ))}
+                </small>
                 <p>{post.content}</p>
                 <small>{new Date(post.date).toLocaleDateString()}</small>
                 <p>
                   <strong>Posted by:</strong> {post.firstName} {post.lastName}
                 </p>
+
+                {/* Display Image */}
+                {post.image_url && (
+                  <img
+                    src={`http://localhost:5000${post.image_url}`} // Adjust the URL as needed
+                    alt="Blog Post"
+                    className="post-image"
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -119,9 +137,8 @@ export default function Home() {
       {/* Section 7: Call to Action */}
       <section className="cta-section">
         <h2>Start Your Free Trial Today</h2>
-        <p>Experience the full power of AI-driven estate planning</p>
-        <input type="email" placeholder="Enter your email" />
-        <button>Sign Up</button>
+        <p>Join the community and experience the full power of AI-driven estate planning</p>
+        <Link to="/register"><button>Sign Up</button></Link>
       </section>
 
       {/* Section 8: Footer */}

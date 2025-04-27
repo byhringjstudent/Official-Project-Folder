@@ -2,20 +2,17 @@ from flask import request, jsonify, session, Blueprint, redirect, url_for, flash
 import psycopg2
 from psycopg2 import sql
 import bcrypt
-import random
 import os
 from dotenv import load_dotenv
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from flaskAppConfig import db_info
-from utils import uniqueID
+from utils import create_unique_id
 from EmailVerification.email_verification_routes import send_verification_email
 
 dotenv_path = os.path.join(os.path.dirname(__file__), 'flask-app.env')
 load_dotenv(dotenv_path)
 
-#Unique ID generator for account and user IDs. Class in utils.py    
-idGen = uniqueID(10000, 99999, db_info)
 
 #create blueprint for account routes
 app_bp = Blueprint('account_routes', __name__)
@@ -38,6 +35,8 @@ def register_user():
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     hashed_password_str = hashed_password.decode('utf-8')
     
+
+    
     try:
         conn = psycopg2.connect(**db_info) #connect to the database
         cur = conn.cursor()
@@ -49,9 +48,9 @@ def register_user():
             #if the email already exists return jsonify with error message and 409 status code
             return jsonify({'message': 'Email already exists.'}), 409
         #if the email does not exist insert the new user into the database
-        accountid = idGen.genID()#generate a unique account ID
-        cur.execute("INSERT INTO account (accountid, accounttype, orgid) VALUES (%s, %s, %s)", (accountid, "Free", idGen.genID()))
-        cur.execute("INSERT INTO users (userid, email, password, firstname, lastname, accountid) VALUES (%s, %s, %s, %s, %s, %s)", (idGen.genID(), email, hashed_password_str, firstName, lastName, accountid))
+        accountid = create_unique_id()#generate a unique account ID
+        cur.execute("INSERT INTO account (accountid, accounttype, orgid) VALUES (%s, %s, %s)", (accountid, "Free", create_unique_id()))
+        cur.execute("INSERT INTO users (userid, email, password, firstname, lastname, accountid) VALUES (%s, %s, %s, %s, %s, %s)", (create_unique_id(), email, hashed_password_str, firstName, lastName, accountid))
         conn.commit()
         cur.close()
         conn.close()
@@ -164,7 +163,7 @@ def viewAccountDetails():
             email, firstName, lastName, verifiedemail = userDetails
             cur.close()
             conn.close()
-            return jsonify({'email': email, 'firstName': firstName, 'lastName': lastName, 'verified email status': verifiedemail}), 200 #return success message with the user details
+            return jsonify({'email': email, 'firstName': firstName, 'lastName': lastName, 'verifiedemail': verifiedemail}), 200 #return success message with the user details
         else:
             return jsonify({'message': 'User not found'}), 404 #return error message if the user is not found
     except Exception as e: 
@@ -178,11 +177,11 @@ def get_blog_posts():
     try:
         conn = psycopg2.connect(**db_info)
         cur = conn.cursor()
-        cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, status FROM blog WHERE accountid = %s", (accountid,)) #query to get the blog posts from the database
+        cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, status, shortdescription, tags FROM blog WHERE accountid = %s", (accountid,)) #query to get the blog posts from the database
         posts = cur.fetchall() #get the result of the query
         cur.close()
         conn.close()
-        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%Y-%m-%d"), "status": post[4]} for post in posts] #format the result into a list of dictionaries
+        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%Y-%m-%d"), "status": post[4], "shortdescription": post[5], "tags": post[6]} for post in posts] #format the result into a list of dictionaries
         return jsonify(posts_data), 200 #return success message with the blog posts 
     except Exception as e:
         return jsonify({'message': f'Error retrieving blog posts: {str(e)}'}), 500
@@ -266,6 +265,9 @@ def updatePassword():
     currentPassword = data.get('currentPassword') #get current password from request data
     newPassword = data.get('newPassword') #get new password from request data
     accountid = session.get('accountid') #get the account ID from the session
+    
+    if newPassword == currentPassword:
+        return jsonify({'message': 'Passwords are the same'}), 401
 
     conn = psycopg2.connect(**db_info) #connect to db  
     cur = conn.cursor() #create cursor
@@ -300,24 +302,34 @@ def updatePassword():
 #delete account route
 @app_bp.route('/deleteAccount', methods = ['POST'])
 def deleteAccount():
+    data = request.get_json()
+    password = data.get('password')
     conn = psycopg2.connect(**db_info) #connect to the database
     cur = conn.cursor() 
     accountid = session.get('accountid') #get the account ID from the session
-    
+    print(f"Account ID from session: {accountid}")
     try:
-        deleteUser = sql.SQL("DELETE FROM users WHERE accountid = %s") #query to delete the user from the database
-        deleteAccount =sql.SQL("DELETE FROM account WHERE accountid = %s") #query to delete the account from the database
-        deleteBlog = sql.SQL("DELETE FROM blog WHERE accountid= %s") #query to delete the blogs from the database
-    
-        cur.execute(deleteUser, (accountid,)) #delete the user from the database
-        cur.execute(deleteBlog, (accountid,)) ##delete the blogs from the database
-        cur.execute(deleteAccount, (accountid,)) ##delete the account from the database
+        query = sql.SQL("SELECT password FROM users WHERE accountid = %s") #query to get the password from the database
+        cur.execute(query, (accountid,)) #execute the query with the account ID as a parameter
+        resultPassword = cur.fetchone() #get the result of the query
+        if resultPassword:
+            stored_hash = resultPassword[0]
+            if bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')): #check if the input password matches the stored password
+                #if the password matches hash the new password and update it in the database
+                deleteAccount =sql.SQL("DELETE FROM account WHERE accountid = %s") #query to delete the account from the database
+                cur.execute(deleteAccount, (accountid,)) ##delete the account from the database
         
-        conn.commit()
-        cur.close()
-        conn.close()
-        return jsonify({'message' : 'Account was successfully deleted'}),204
-    
+                conn.commit()
+                cur.close()
+                conn.close()
+                session.clear()
+                response = jsonify({'message': 'Account deleted successfully'})
+                response.set_cookie('session', '', expires=0)  # optional: clears cookie
+                return response, 200 
+            else:   
+                return jsonify({'message': 'Incorrect Password'}), 201
+        else:
+            return jsonify({'message': 'Account ID not found'}), 404
     except Exception as e: 
         return jsonify({'message': f'Error deleting account: {str(e)}'}),500
 

@@ -119,6 +119,29 @@ section {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
+.tag-badge {
+  display: inline-block;
+  background-color: #2C3E50;
+  color: #eef6fb;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border: 1px solid #c3e6cb;
+  margin: 20px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}
+
+
 /* CTA Section */
 .cta-section {
   background-color: #2C3E50; /* Navy Blue */

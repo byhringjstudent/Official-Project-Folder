@@ -22,19 +22,6 @@ def create_app(config_class=Config): # creating the app with the config class
 
 app = create_app() # creating the app instance
 
-#@app.route('/') # home route
-#def home():
-#    print(f"Session ID: {session.get('accountid')}") # print the session ID for debugging
-#    if session.get('accountid'): # check if the user is logged in
-#        # if the user is logged in, show the welcome back message
-#        return jsonify({"message": 'Welcome back!', 
-#                        "version": ['beta'],
-#                        'available_routes': ['/blog/readposts', '/blog/createposts', '/account/viewAccountDetails']}), 200
-#   else:# if the user is not logged in, show the welcome message
-#        return jsonify({"message": 'Welcome to LegacyIQ!',
-#                        "version": ['beta'],
-#                        'available_routes': ['/account/register', '/account/login']}), 200
-
 
 if __name__ == '__main__': # run the app
     app.run(debug=True)

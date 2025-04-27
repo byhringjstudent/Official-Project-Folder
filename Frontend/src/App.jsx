@@ -10,6 +10,11 @@ import KnowledgeBase from './components/pages/KnowledgeBase';
 import VerifyEmail from './components/pages/VerifyEmail';
 import AccountPortal from './components/pages/AccountPortal';
 import Blogs from './components/pages/Blogs';
+import ChangePassword from './components/pages/ChangePassword';
+import EditProfile from './components/pages/EditProfile';
+import DeleteAccount from './components/pages/DeleteAccount';
+import SinglePost from './components/pages/SinglePost';
+import EditPost from './components/pages/EditPost';
 
 
 function App() {
@@ -82,6 +87,12 @@ function App() {
 
          <Route path='/account-portal' element={<AccountPortal />} />
          <Route path='/blogs' element={<Blogs />} />
+         <Route path='/change-password' element={<ChangePassword />} />
+         <Route path='/edit-profile' element={<EditProfile />} />
+         <Route path='/account-deletion' element={<DeleteAccount />} />
+         <Route path='/blog/:id' element={<SinglePost />} />
+         <Route path='/edit-post/:id' element={<EditPost />} />
+
 
       </Routes>
     </>

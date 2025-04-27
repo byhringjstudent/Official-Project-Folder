@@ -12,24 +12,10 @@ class Config: # Base configuration class
     SESSION_COOKIE_HTTPONLY = True
     PERMANENT_SESSION_LIFETIME = timedelta(days=7) # Session lifetime
 
-#class DevelopmentConfig(Config): # Development configuration class
-#   DEBUG = True # Enable debug mode
-#    ENV = 'development' # Environment type
-
-#class ProductionConfig(Config): # Production configuration class
-#    DEBUG = False # Disable debug mode
-#    ENV = 'production' # Environment type
-#    SESSION_COOKIE_SECURE = True
-
-#class TestingConfig(Config): # Testing configuration class
-#    DEBUG = True # Enable debug mode
-#    TESTING = True # Enable testing mode
-#    ENV = 'testing'
-
 #database connection information
 db_info ={'host': "localhost",
     'port': "5432",
-    'database' : "legacyiq",
+    'database' : "LegacyIQ",
     'user' : "postgres",
     'password':"password123"}
 

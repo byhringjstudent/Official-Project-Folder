@@ -28,7 +28,9 @@ export default function Login({ setIsLoggedIn }) {
         setMessage('Login successful! Redirecting...');
         setIsLoggedIn(true);
         localStorage.setItem('isLoggedIn', 'true');
-        navigate('/');
+        setTimeout(() => {
+          navigate('/');
+        }, 1500); // 1500 milliseconds = 1.5 seconds
       } else {
         setMessage(data.message || 'Login failed.');
       }
@@ -62,7 +64,11 @@ export default function Login({ setIsLoggedIn }) {
         />
 
         <button type="submit">Login</button>
-        <p className="login-message">{message}</p>
+        {message && (
+          <p className={`login-message ${message.toLowerCase().includes('successfully') ? 'success' : 'error'}`}>
+            {message}
+          </p>
+        )}
       </form>
     </div>
   );
