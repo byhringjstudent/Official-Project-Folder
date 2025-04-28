@@ -25,7 +25,7 @@ function App() {
   useEffect(() => {
     const verifySession = async () => {
       try {
-        const res = await fetch('http://localhost:5000/account/check-auth', {
+        const res = await fetch('/account/check-auth', {
           credentials: 'include',
         });
   

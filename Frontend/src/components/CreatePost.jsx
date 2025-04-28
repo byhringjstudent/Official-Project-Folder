@@ -7,7 +7,7 @@ export default function CreatePost() {
 
   const handleSubmit = async (status) => {
     try {
-      const response = await fetch('http://localhost:5000/blog/createposts', {
+      const response = await fetch('/blog/createposts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // for sessions

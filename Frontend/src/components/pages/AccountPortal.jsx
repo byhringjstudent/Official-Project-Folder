@@ -21,7 +21,7 @@ const AccountPortal = () => {
   useEffect(() => {
     const fetchAccountDetails = async () => {
       try {
-        const response = await fetch("http://localhost:5000/account/viewAccountDetails", {
+        const response = await fetch("/account/viewAccountDetails", {
           method: 'GET',
           credentials: 'include',
         });
@@ -35,7 +35,7 @@ const AccountPortal = () => {
 
     const fetchUserBlogs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/account/blog-posts", {
+        const response = await fetch("/account/blog-posts", {
           method: 'GET',
           credentials: 'include',
         });
@@ -86,7 +86,7 @@ const AccountPortal = () => {
     formData.append('status', status)
 
     try {
-      const response = await fetch('http://localhost:5000/blog/createposts', {
+      const response = await fetch('/blog/createposts', {
         method: 'POST',
         credentials: 'include',
         body: formData,
@@ -109,7 +109,7 @@ const AccountPortal = () => {
   };
 
   const deleteBlog = async (blogID) => {
-    const response = await fetch(`http://localhost:5000/blog/deleteposts/${blogID}`, {
+    const response = await fetch(`/blog/deleteposts/${blogID}`, {
       method: 'DELETE', // DELETE method
       headers: {
         'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ const AccountPortal = () => {
   
 
   const editBlog = async (blogID) => {
-    const response = await fetch(`http://localhost:5000/blog/updateposts/${blogID}`, {
+    const response = await fetch(`/blog/updateposts/${blogID}`, {
       method: 'PUT', // Use PUT or PATCH for updating
       headers: {
         'Content-Type': 'application/json',
