@@ -9,7 +9,7 @@ export default function VerifyEmail() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const response = await fetch(`/verify_email/${token}`);
+        const response = await fetch(`http://localhost:5000/verify_email/${token}`);
         const result = await response.json();
         setMessage(result.message || result.error);
         setStatus(response.ok ? 'success' : 'error');

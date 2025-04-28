@@ -15,7 +15,7 @@ export default function EditAccount() {
     setLoading(true);
 
     try {
-      const response = await fetch('/account/edit', {
+      const response = await fetch('http://localhost:5000/account/edit', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

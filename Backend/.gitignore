@@ -1,4 +1,4 @@
 flask-app.env
 __pycache__
-flask_session
+flask_session/
 static

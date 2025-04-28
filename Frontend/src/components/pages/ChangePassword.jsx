@@ -12,7 +12,7 @@ export default function Login({ setIsLoggedIn }) {
     e.preventDefault();
 
     try {
-      const response = await fetch('/account/updatePassword', {
+      const response = await fetch('http://localhost:5000/account/updatePassword', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
