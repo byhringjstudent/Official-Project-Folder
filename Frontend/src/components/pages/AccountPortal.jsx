@@ -33,6 +33,8 @@ const AccountPortal = () => {
       }
     };
 
+      
+
     const fetchUserBlogs = async () => {
       try {
         const response = await fetch("http://localhost:5000/account/blog-posts", {
@@ -190,10 +192,12 @@ const AccountPortal = () => {
           blogs.map((blog) => (
             <div key={blog.blogID} className="user-blog-preview">
               <h4>{blog.title}</h4>
+              <p className={`blog-status ${blog.status === 'published' ? 'published' : 'draft'}`}>
+              {blog.status === 'published' ? 'Published' : 'Draft'}
+              </p>
               <p>{blog.shortdescription}</p>
               <small>{new Date(blog.date).toLocaleDateString()}</small>
               <p></p>
-              <p>{blog.status}</p>
               <a href={`/blog/${blog.blogID}`}>Read more →</a>
                {/* Delete button */}
                <button onClick={() => deleteBlog(blog.blogID)}

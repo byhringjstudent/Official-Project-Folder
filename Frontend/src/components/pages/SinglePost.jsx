@@ -46,7 +46,7 @@ const SinglePost = () => {
   return (
     <div className="single-post">
         
-    <button onClick={handleBackClick}>Back</button>
+    <button className="back-button" onClick={handleBackClick}>Back</button>
       {/* Displaying the single post */}
       <section className="single-blog">
         {/* Display error message if provided */}

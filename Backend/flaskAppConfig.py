@@ -13,7 +13,7 @@ class Config: # Base configuration class
     PERMANENT_SESSION_LIFETIME = timedelta(days=7) # Session lifetime
 
 #database connection information
-db_info ={'host': "192.168.1.221",
+db_info ={'host': "localhost",
     'port': "5432",
     'database' : "LegacyIQ",
     'user' : "postgres",
