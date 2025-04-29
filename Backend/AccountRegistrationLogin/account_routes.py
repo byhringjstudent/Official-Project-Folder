@@ -9,6 +9,7 @@ from sendgrid.helpers.mail import Mail
 from flaskAppConfig import db_info
 from utils import create_unique_id
 from EmailVerification.email_verification_routes import send_verification_email
+from .account_db_functions import *
 
 dotenv_path = os.path.join(os.path.dirname(__file__), 'flask-app.env')
 load_dotenv(dotenv_path)
@@ -17,7 +18,8 @@ load_dotenv(dotenv_path)
 #create blueprint for account routes
 app_bp = Blueprint('account_routes', __name__)
 
-#register user route
+#Puporse: This route is used to register a new user in the database.It takes the email, password, first name and 
+# last name from the request data and creates a new user in the database. It also sends a confirmation email to the newly created account.
 @app_bp.route('/register', methods=['POST'])
 def register_user():
     data = request.get_json()
@@ -34,36 +36,15 @@ def register_user():
     #hash the password using bcrypt
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     hashed_password_str = hashed_password.decode('utf-8')
-    
-
-    
-    try:
-        conn = psycopg2.connect(**db_info) #connect to the database
-        cur = conn.cursor()
-        #check if the email already exists in the database
-        query = sql.SQL("SELECT accountid FROM users WHERE email = %s")
-        cur.execute(query, (email,))
-        result = cur.fetchone()
-        if result:
-            #if the email already exists return jsonify with error message and 409 status code
-            return jsonify({'message': 'Email already exists.'}), 409
-        #if the email does not exist insert the new user into the database
-        accountid = create_unique_id()#generate a unique account ID
-        cur.execute("INSERT INTO account (accountid, accounttype, orgid) VALUES (%s, %s, %s)", (accountid, "Free", create_unique_id()))
-        cur.execute("INSERT INTO users (userid, email, password, firstname, lastname, accountid) VALUES (%s, %s, %s, %s, %s, %s)", (create_unique_id(), email, hashed_password_str, firstName, lastName, accountid))
-        conn.commit()
-        cur.close()
-        conn.close()
-        #send confirmation email to newly created account. Function located in email_verification_routes.py
-        send_verification_email(email)
-                 
-        
-        return jsonify({'message': 'User created successfully. You will be recieving a confirmation email soon!'}), 201
-    except Exception as e: 
-        return jsonify({'message': f'Error creating user: {str(e)}'}),500
+ 
+    result, status_code = create_user(email, hashed_password_str, firstName, lastName)
+    #send confirmation email to newly created account. Function located in email_verification_routes.py
+    send_verification_email(email)
+    return jsonify({'message': result['message'] if 'message' in result else 'User registered successfully'}), status_code #return success message if the user is registered successfully
 
 
-#login user route
+#Purpose: This route is used to login a user in the database. It takes the email and password from the request data and checks if the user exists in the database and verifies the password. 
+# If the user exists and the password is correct, it creates a session for the user.
 @app_bp.route('/login', methods = ['POST'])
 def userLogin():
     data = request.get_json()#get json data from request
@@ -72,49 +53,17 @@ def userLogin():
     if session.get('accountid'):#check if the user is already logged in
         #if the user is already logged in return jsonify with error message and 401 status code
         return jsonify({"message": 'User already logged in'}), 401
-    
     if not email or not password: ##check if the email and password are provided
         return jsonify({'message': 'Email and Password are required to login.'}), 400
     
-    #hash the input password using bcrypt to compare to database password   
-    hashed_password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    result, status_code = login_user(email, password)
+    if result['status'] == 'success':
+        session['accountid'] = result['accountid']
+        session['userid'] = result['userid']
+    return jsonify({'message': result['message'] if 'message' in result else 'User logged in successfully'}), status_code
     
-    try:
-        conn = psycopg2.connect(**db_info)#connect to the database
-        cur = conn.cursor()#
-        query = sql.SQL("SELECT password FROM users WHERE email = %s")# query to get the password from the database
-        cur.execute(query, (email,))#execute the query with the email as a parameter
-        resultPassword = cur.fetchone()#get the result of the query
-        
-        if resultPassword: #check if the result is not empty
-            #if the result is not empty get the password from the result
-            stored_hash= resultPassword[0]
-            if bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')):#check if the input password matches the stored password
-                #if the password matches get the account ID and user ID from the database
-                userAccountIDQuery = sql.SQL("SELECT accountid FROM users WHERE email = %s")
-                userIDQuery = sql.SQL("SELECT userid FROM users WHERE email = %s")
-                cur.execute(userAccountIDQuery, (email,))
-                accountid = cur.fetchone()[0] #get the account ID from the result
-                cur.execute(userIDQuery, (email,))
-                userid = cur.fetchone()[0] #get the user ID from the result
-                cur.close()
-                conn.close()
-                session['accountid'] = accountid #set the account ID in the session
-                session['userid'] = userid #set the user ID in the session
-                #print(accountid)
-                #print(userid)
-                #print(userAccountid)
-                #return jsonify({'message': 'Correct login credentials.'}),200 #return success message
-                return jsonify({'message': 'User logged in successfully'}), 201 #return success message if the user is logged in successfully
-            else:
-                return jsonify({'message': 'Incorrect Password'}), 401 #return error message if the password does not match
-        else:
-            return jsonify({'message': 'Email not found'}), 404 #return error message if the email is not found
-        
-    except Exception as e: 
-        return jsonify({'message': f'Error logging in user: {str(e)}'}), 500 #return error message if there is an error logging in the user
-    
-#debug route to check if the user is logged in
+#purpose: This route is used to check if the user is logged in or not. It checks if the account ID and user ID are in the session. 
+# If they are, it returns a success message with the account ID and user ID. If they are not, it returns an error message.
 @app_bp.route('/sessionCheck', methods = ['GET'])
 def sessionCheck():
     if 'accountid' in session and 'userid' in session:
@@ -126,8 +75,7 @@ def sessionCheck():
 
 
 
-
-#logout user route
+#purpose: This route is used to log out a user. It clears the session and returns a success message.
 @app_bp.route('/logout', methods = ['POST'])
 def userLogout():
     try:
@@ -141,33 +89,21 @@ def userLogout():
         return jsonify({'message': f'Log out unsuccessful: {str(e)}'}), 500   #return error message if there is an error logging out the user
     
 
-#view account details route
+#purpose: This route is used to view the account details of a user. It checks if the user is logged in and if they are, it retrieves the account details from the database and returns them.
+# If the user is not logged in, it returns an error message.
 @app_bp.route('/viewAccountDetails', methods = ['GET'])
 def viewAccountDetails():
-    conn = psycopg2.connect(**db_info) #connect to the database
-    cur = conn.cursor()
     accountid = session.get('accountid')#get the account ID from the session
-    #print(accountid) #debugging statement to check if the account ID is in the session
-    
     if not accountid: ##check if the account ID is not in the session
         #if the account ID is not in the session return jsonify with error message and 401 status code
         return jsonify({'message': 'User not logged in'}), 401
     
-    try:
-        query = sql.SQL("SELECT email, firstname, lastname, verifiedemail FROM users WHERE accountid = %s") #query to get the email, first name and last name from the database
-        cur.execute(query, (accountid,))
-        userDetails = cur.fetchone() #get the result of the query
+    result, status_code = get_user_info(accountid)
+    if result['status'] == 'success':
+        #if the user is logged in return jsonify with success message and 200 status code
+        return jsonify({'email': result['email'], 'firstName': result['firstName'], 'lastName': result['lastName'], 'verifiedemail': result['verifiedemail']}), status_code
         
-        if userDetails: #check if the result is not empty
-            #if the result is not empty get the email, first name and last name from the result
-            email, firstName, lastName, verifiedemail = userDetails
-            cur.close()
-            conn.close()
-            return jsonify({'email': email, 'firstName': firstName, 'lastName': lastName, 'verifiedemail': verifiedemail}), 200 #return success message with the user details
-        else:
-            return jsonify({'message': 'User not found'}), 404 #return error message if the user is not found
-    except Exception as e: 
-        return jsonify({'message': f'Error retrieving account details: {str(e)}'}),500 #return error message if there is an error retrieving the account details
+    return jsonify({'message': result['message'] if 'message' in result else 'User logged in successfully'}), status_code
 
 @app_bp.route('/blog-posts', methods = ['get'])
 def get_blog_posts():
