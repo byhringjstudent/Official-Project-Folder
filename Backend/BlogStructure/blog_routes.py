@@ -94,7 +94,7 @@ def get_latest_posts():
         conn = psycopg2.connect(**db_info)
         cur = conn.cursor()
         cur.execute("SELECT blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' ORDER by dateposted DESC")
-        posts = cur.fetchmany(size=3)
+        posts = cur.fetchmany(size=2)
         cur.close()
         conn.close()
         posts_data = [{"title": post[0], "content": post[1], "date": post[2].strftime("%B %d, %Y"), "image_url" : post[3],"shortdescription" : post[4],"tags" : post[5], "firstName": post[6], "lastName": post[7]} for post in posts]

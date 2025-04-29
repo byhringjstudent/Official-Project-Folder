@@ -117,7 +117,7 @@ def get_blog_posts():
         posts = cur.fetchall() #get the result of the query
         cur.close()
         conn.close()
-        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%Y-%m-%d"), "status": post[4], "shortdescription": post[5], "tags": post[6]} for post in posts] #format the result into a list of dictionaries
+        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%B %d, %Y"), "status": post[4], "shortdescription": post[5], "tags": post[6]} for post in posts] #format the result into a list of dictionaries
         return jsonify(posts_data), 200 #return success message with the blog posts 
     except Exception as e:
         return jsonify({'message': f'Error retrieving blog posts: {str(e)}'}), 500
@@ -134,7 +134,7 @@ def get_draft_posts():
         posts = cur.fetchall() #get the result of the query
         cur.close()
         conn.close()
-        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%Y-%m-%d"), "status": post[4]} for post in posts] #format the result into a list of dictionaries
+        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%B %d, %Y"), "status": post[4]} for post in posts] #format the result into a list of dictionaries
         return jsonify(posts_data), 200 #return success message with the blog posts 
     except Exception as e:
         return jsonify({'message': f'Error retrieving blog posts: {str(e)}'}), 500
