@@ -28,7 +28,7 @@ export default function EditAccount() {
       setLoading(false);
 
       if (response.ok) {
-        setMessage(data.message);
+        setMessage(data.message || "Account Successfully Updated");
 
         // After 1.5 seconds, redirect to home
         setTimeout(() => {

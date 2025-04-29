@@ -143,8 +143,7 @@ def get_draft_posts():
 
     
 
-#edit account details route    
-@app_bp.route('/edit', methods = ['PUT'])
+@app_bp.route('/edit', methods=['PUT'])
 def editAccountDetails():
     data = request.get_json() #get json data from request
     #currentEmail = data.get('currentEmail') #get current email from request data
@@ -155,45 +154,44 @@ def editAccountDetails():
     
     conn = psycopg2.connect(**db_info)
     cur = conn.cursor()
-            
-    if newFirstName: ##check if the new first name is provided
-        try:
+
+    
+
+    try:
+        if not newFirstName and not newLastName and not newEmail:
+            return jsonify({'message': f'Error updating account'}), 400 
+        if newFirstName: ##check if the new first name is provided
             query = sql.SQL("UPDATE users set firstname = %s WHERE accountid = %s") #query to update the first name in the database
             cur.execute(query, (newFirstName, accountid)) #execute the query with the new first name and account ID as parameters
-            conn.commit()
-            return jsonify({'message': 'First name updated successfully'}), 201
-        except Exception as e: 
-            return jsonify({'message': f'Error updating first name: {str(e)}'}),500
             
-    if newLastName:
-        try:
+
+        if newLastName:
             query = sql.SQL("UPDATE users set lastname = %s WHERE accountid = %s") #query to update the last name in the database
             cur.execute(query, (newLastName, accountid)) #execute the query with the new last name and account ID as parameters
-            conn.commit()
-            return jsonify({'message': 'Last name updated successfully'}), 201
-        except Exception as e: 
-            return jsonify({'message': f'Error updating last name: {str(e)}'}),500
-    
-    if newEmail:
-        try:
-            query = sql.SQL("UPDATE users set email = %s WHERE accountid = %s") ##query to update the email in the database
+
+        
+        if newEmail:
             cur.execute("SELECT email FROM users WHERE email = %s", (newEmail,)) #check if the new email already exists in the database
             result = cur.fetchone() #get the result of the query
             if result: #check if the result is not empty
                 #if the result is not empty return jsonify with error message and 409 status code
                 return jsonify({'message': 'Email already exists.'}), 409
+            query = sql.SQL("UPDATE users set email = %s WHERE accountid = %s") ##query to update the email in the database
             cur.execute(query, (newEmail, accountid)) ##execute the query with the new email and account ID as parameters
             cur.execute("UPDATE users SET verifiedemail = FALSE WHERE accountid = %s", (accountid,)) #set the verified email to false in the database
-            conn.commit()
             send_verification_email(newEmail) #send confirmation email to the new email address. Function located in email_verification_routes.py
-            return jsonify({'message': 'Email updated successfully. You will be recieving a confirmation email.'}), 201
-        except Exception as e: 
-            return jsonify({'message': f'Error updating Email: {str(e)}'}),500
+        
+        
+        conn.commit()
+        return jsonify({'message': "Account updated succseffully"}), 200
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'message': f'Error updating account: {str(e)}'}), 500
+    finally:
+        cur.close()
+        conn.close()
     
-    #if no new email, password, first name or last name is provided return jsonify with error message
-    cur.close()
-    conn.close() 
-    return jsonify({'message': 'No new email, first name or last name provided to update.'}), 400
 
 @app_bp.route('/updatePassword', methods = ['PUT'])
 def updatePassword():
@@ -263,7 +261,7 @@ def deleteAccount():
                 response.set_cookie('session', '', expires=0)  # optional: clears cookie
                 return response, 200 
             else:   
-                return jsonify({'message': 'Incorrect Password'}), 201
+                return jsonify({'message': 'Incorrect Password'}), 400
         else:
             return jsonify({'message': 'Account ID not found'}), 404
     except Exception as e: 
