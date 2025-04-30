@@ -38,6 +38,7 @@ export default function Home() {
 
   return (
     <div className="landing-page">
+      <h3 className="landing-header">Welcome To LegacyIQ</h3>
       {/* Section 1: Hero Banner */}
       <section className="hero-section">
         <h1>The World’s Most Intelligently Secure Estate Planning Platform</h1>

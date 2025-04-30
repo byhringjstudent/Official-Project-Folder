@@ -1,0 +1,82 @@
+/* Blog Form Section */
+.blog-header{
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    color: white;
+}
+.blog-form-section {
+    border: 2px solid #F1C40F; /* Gold Amber border */
+    border-radius: 12px;
+    padding: 2rem;
+    background-color: #fafafa;
+    margin-top: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+  
+  /* Inputs and Textareas */
+  input[type="text"],
+  textarea,
+  input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #2C3E50;
+    background-color: #fff;
+  }
+  
+  /* Buttons */
+  .publish-button {
+    background-color: #2ECC71; /* Emerald */
+    color: #fff;
+    padding: 0.6rem 1.8rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-right: 1rem;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .publish-button:hover {
+    background-color: #27ae60;
+  }
+  
+  .draft-button {
+    background-color: #F1C40F; /* Gold Amber */
+    color: #2C3E50; /* Navy text */
+    padding: 0.6rem 1.8rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .draft-button:hover {
+    background-color: #d4ac0d;
+  }
+  
+  /* Tag styling */
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .tag-chip {
+    background-color: #e0e0e0;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    color: #333;
+  }
+  

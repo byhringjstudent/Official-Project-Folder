@@ -113,7 +113,7 @@ def get_blog_posts():
     try:
         conn = psycopg2.connect(**db_info)
         cur = conn.cursor()
-        cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, status, shortdescription, tags FROM blog WHERE accountid = %s", (accountid,)) #query to get the blog posts from the database
+        cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, status, shortdescription, tags FROM blog WHERE accountid = %s ORDER BY dateposted DESC", (accountid,)) #query to get the blog posts from the database
         posts = cur.fetchall() #get the result of the query
         cur.close()
         conn.close()
@@ -183,7 +183,7 @@ def editAccountDetails():
         
         
         conn.commit()
-        return jsonify({'message': "Account updated succseffully"}), 200
+        return jsonify({'message': "Account updated successfully"}), 200
 
     except Exception as e:
         conn.rollback()

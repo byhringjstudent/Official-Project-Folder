@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './components/pages/Login';
 import Home from './components/pages/Home';
-import CreatePost from './components/CreatePost';
+import CreatePost from './components/pages/CreatePost';
 import Register from './components/pages/Register';
 import Logout from './components/pages/Logout';  // Import Logout component
 import KnowledgeBase from './components/pages/KnowledgeBase';
@@ -92,6 +92,7 @@ function App() {
          <Route path='/account-deletion' element={<DeleteAccount />} />
          <Route path='/blog/:id' element={<SinglePost />} />
          <Route path='/edit-post/:id' element={<EditPost />} />
+         <Route path='/write' element={<CreatePost />} />
 
 
       </Routes>

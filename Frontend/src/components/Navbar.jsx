@@ -30,7 +30,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
       <div style={styles.right}>
         {!isLoggedIn ? (
           <>
-            <Link to="/" style={styles.link}>Home</Link>
+            <Link to="/" style={styles.link}>LegacyIQ</Link>
             <span style={styles.bar}>|</span>
             <Link to="/login" style={styles.link}>Login</Link>
             <span style={styles.bar}>|</span>
@@ -38,7 +38,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
           </>
         ) : (
           <>
-            <Link to="/" style={styles.link}>Home</Link>
+            <Link to="/" style={styles.link}>LegacyIQ</Link>
             <span style={styles.bar}>|</span>
             <Link to="/blogs" style={styles.link}>Blog</Link>
             <span style={styles.bar}>|</span>
