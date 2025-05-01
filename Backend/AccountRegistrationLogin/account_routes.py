@@ -94,21 +94,29 @@ def viewAccountDetails():
     if result['status'] == 'success':
         #if the user is logged in return jsonify with success message and 200 status code
         return jsonify({'email': result['email'], 'firstName': result['firstName'], 'lastName': result['lastName'], 'verifiedemail': result['verifiedemail']}), status_code
-        
-    return jsonify({'message': result['message'] if 'message' in result else 'User logged in successfully'}), status_code
+    else:
+        #if the user is not logged in return jsonify with error message and 401 status code
+        return jsonify({'message': result['message'] if 'message' in result else 'User information not retrieved successfully'}), status_code
+    
 
 #Purpose: This route is used to display the blog posts of a user in their account portal.
 # It checks if the user is logged in and if they are, it retrieves the blog posts from the database and returns them.
 # If the user is not logged in, it returns an error message.
 @app_bp.route('/blog-posts', methods = ['get'])
 def get_blog_posts():
-    accountid = session.get('accountid') #get the account ID from the session
-    if not accountid: #check if the account ID is not in the session    
-        return jsonify({'message': 'User not logged in'}), 401
-    result, status_code = get_user_blogs(accountid) #get the user info from the database
-    if result['status'] == 'success':
-        #print(result['blogs'])
-        return jsonify({'blogs': result['blogs']}), status_code
+    try:
+        accountid = session.get('accountid') #get the account ID from the session
+        if not accountid: #check if the account ID is not in the session    
+            return jsonify({'message': 'User not logged in'}), 401
+        result, status_code = get_user_blogs(accountid) #get the user info from the database
+        if result['status'] == 'success':
+            #print(result['blogs'])
+            return jsonify({'blogs': result['blogs']}), status_code
+        else:
+            return jsonify({'message': result['message'] if 'message' in result else 'User blogs not retrieved successfully'}), status_code
+    except Exception as e:
+        return jsonify({'message': f'Error retrieving blog posts: {str(e)}'}), 500
+        
 
 
 #Purpose: This route is used to display the draft blog posts of a user in their account portal.
@@ -123,6 +131,8 @@ def get_draft_posts():
     if result['status'] == 'success':
         #print(result['blogs'])
         return jsonify({'blogs': result['drafts']}), status_code
+    else:
+        return jsonify({'message': result['message'] if 'message' in result else 'User blogs not retrieved successfully'}), status_code
        
 
 
