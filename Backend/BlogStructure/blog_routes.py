@@ -1,15 +1,13 @@
-from flask import request, jsonify, session, Blueprint, render_template
+from flask import request, jsonify, session, Blueprint
 from flaskAppConfig import db_info
 from datetime import datetime, timezone
 from pytz import timezone
-from zoneinfo import ZoneInfo
-from psycopg2 import sql
 import psycopg2
 from utils import create_unique_id
 from werkzeug.utils import secure_filename
 import os
 import json
-from PIL import Image
+from .blog_db_functions import *
 
 
 
@@ -17,6 +15,8 @@ app_bp = Blueprint('blog_routes', __name__)
 
 #Purpose: This route allows users to create blog posts. Users will include a title, short description of the blog, the content
 #of the blog, tags, and an image. 
+#The image will be saved in the static/uploads folder.  
+# The blog post will be saved in the database with a status of either draft or published.
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -54,78 +54,54 @@ def create_post():
             filepath = os.path.join(UPLOAD_FOLDER, filename)
             image.save(filepath)
             image_url = f"/{filepath}"
-    try: 
-        conn = psycopg2.connect(**db_info)
-        cur = conn.cursor()
-        #userAccountid = session.get('accountid')
-        cur.execute("INSERT INTO blog (blogid, blogtitle, dbinstance, dateposted, accountid, status, image_url, tags, shortdescription) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (create_unique_id(), title, content, created_at, userAccountid, status, image_url, tags, shortDescription))
-        conn.commit()
-        cur.close()
-        conn.close()
-        if status == 'published':
-            return jsonify({'message': 'Post successfully created!'}), 201
-        else:
-            return jsonify({'message': 'Post successfully created but not published!'}), 201
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return jsonify({'message': f'Error creating post: {str(e)}'}), 500
+    result, status_code = create_blog_post(title, content, shortDescription, status, created_at, tags, userAccountid, image_url)
+    if result['status'] == 'success':
+        return jsonify({'message': result['message']}), status_code 
+    else:
+        return jsonify({'message': result['message']}), status_code
     
     
 
-#read all blog posts
+#purpose: This route allows users to view all blog posts.
+# Users will be able to view all blog posts that are published.
 @app_bp.route('/readposts', methods = ['GET'])
 def get_posts():
-    try:
-        conn = psycopg2.connect(**db_info)
-        cur = conn.cursor()
-        cur.execute("SELECT blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' ORDER by dateposted DESC")
-        posts = cur.fetchall()
-        cur.close()
-        conn.close()
-        posts_data = [{"title": post[0], "content": post[1], "date": post[2].strftime("%B %d, %Y"), "image_url" : post[3],"shortdescription" : post[4],"tags" : post[5], "firstName": post[6], "lastName": post[7]} for post in posts]
-        return jsonify({"posts": posts_data}), 200
-    except Exception as e:
-        return jsonify({'message': f'Error retrieving posts: {str(e)}'}), 500
+    result, status_code = get_all_blog_posts()
+    if result['status'] == 'success':
+        return jsonify({'posts': result['posts']}), status_code
+    else:
+        return jsonify({'message': result['message']}), status_code
 
-#read last 3 blog posts
+
+#Purpose: This route allows users to view the latest blog posts.
+# Users will be able to view the 2 latest blog posts that are published.
 @app_bp.route('/read-latest-posts', methods = ['GET'])
 def get_latest_posts():
-    try:
-        conn = psycopg2.connect(**db_info)
-        cur = conn.cursor()
-        cur.execute("SELECT blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' ORDER by dateposted DESC")
-        posts = cur.fetchmany(size=2)
-        cur.close()
-        conn.close()
-        posts_data = [{"title": post[0], "content": post[1], "date": post[2].strftime("%B %d, %Y"), "image_url" : post[3],"shortdescription" : post[4],"tags" : post[5], "firstName": post[6], "lastName": post[7]} for post in posts]
-        return jsonify({"posts" : posts_data}), 200
-    except Exception as e:
-        return jsonify({'message': f'Error retrieving posts: {str(e)}'}), 500
+    result, status_code = get_latest_blog_posts()
+    if result['status'] == 'success':
+        return jsonify({'posts': result['posts']}), status_code
+    else:
+        return jsonify({'message': result['message']}), status_code
     
 
-#allow users to view one of their posts 
+#Purpose: allow users to view one of their posts 
+# Users will be able to view one of their posts by using the blog id.
+# The blog id will be passed in the URL.
 @app_bp.route('/get-single-post/<uuid:id>', methods = ['GET'])
 def single_post(id):
     accountid = session.get('accountid')
-    print(accountid)
-    print(id)
-    try:
-        conn = psycopg2.connect(**db_info)
-        cur = conn.cursor()
-        cur.execute("SELECT blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, status FROM blog WHERE blogid = %s and accountid = %s",(str(id), str(accountid)))
-        post = cur.fetchone()
-        cur.close()
-        conn.close()
-        if post:
-            post_data = [{"title": post[0],"content": post[1], "date": post[2].strftime("%B %d, %Y"), "image_url" : post[3],"shortdescription" : post[4],"tags" : post[5],"status": post[6]}]
-            return jsonify({"post": post_data}), 200
-        else:
-            return jsonify({'message': 'Post not found'}), 404
-    except Exception as e:
-        return jsonify({'message': f'Error retrieving post: {str(e)}'}), 500
+    if not accountid:
+        return jsonify({'message': 'User not logged in!'}), 401
+    result, status_code = get_blog_post_by_id(id, accountid)
+    if result['status'] == 'success':
+        return jsonify({'post': result['post']}), status_code
+    else:
+        return jsonify({'message': result['message']}), status_code
    
 
-#update existing blog post
+#Purpose: update existing blog post
+# Users will be able to update their blog post by using the blog id.
+# The blog id will be passed in the URL.
 @app_bp.route('/updateposts/<uuid:id>', methods = ['PUT'])
 def update_post(id):
     new_title = request.form.get('title')
@@ -135,7 +111,7 @@ def update_post(id):
     new_tags = json.loads(request.form.get('tags')) if request.form.get('tags') else []  # Ensure tags are JSON    
     image_url = None
     
-    current_image_url = None
+  
     try:
         conn = psycopg2.connect(**db_info)
         cur = conn.cursor()
@@ -179,86 +155,34 @@ def update_post(id):
             image_path = os.path.join(static_folder_path, current_image_url.lstrip('/'))  # Remove leading slash from URL
             
             # Log the file path for debugging
-            print(f"Image path: {image_path}")
+            #print(f"Image path: {image_path}")
             
             # Check if the image exists and delete it
             if os.path.exists(image_path):
-                print(f"Image exists, attempting to delete: {image_path}")
+                #print(f"Image exists, attempting to delete: {image_path}")
                 os.remove(image_path)
-                print(f"Image successfully deleted: {image_path}")
+                #print(f"Image successfully deleted: {image_path}")
             else:
                 print(f"Image not found at path: {image_path}")
         
-    if not new_title and not new_content and not new_status and not new_shortdescription and not new_tags:
-        return jsonify({'message': 'Need to update title, content, status, short description, or tags to update blog post!'}), 400
+        if not new_title and not new_content and not new_status and not new_shortdescription and not new_tags:
+            return jsonify({'message': 'Need to update title, content, status, short description, or tags to update blog post!'}), 400
     
-    print(f"this is the new image_url: {image_url}")
+    #print(f"this is the new image_url: {image_url}")
     updated_at = datetime.now(timezone('America/Chicago'))
-    try:
-        conn = psycopg2.connect(**db_info)
-        cur = conn.cursor()
-        if new_title:
-            cur.execute("UPDATE blog SET blogtitle = %s WHERE blogid = %s", (new_title, str(id)))
-        if new_content:
-            cur.execute("UPDATE blog SET dbinstance = %s WHERE blogid = %s", (new_content, str(id)))
-        if new_status:
-            cur.execute("UPDATE blog SET status = %s WHERE blogid = %s", (new_status, str(id)))
-        if new_shortdescription:
-            cur.execute("UPDATE blog SET shortdescription = %s WHERE blogid = %s", (new_shortdescription, str(id)))
-        if new_tags:
-            cur.execute("UPDATE blog SET tags = %s WHERE blogid = %s", (new_tags, str(id)))
-        if image_url:
-            cur.execute("UPDATE blog SET image_url = %s WHERE blogid = %s", (image_url, str(id)))
-        cur.execute("UPDATE blog SET dateposted = %s WHERE blogid = %s", (updated_at, str(id)))
-        conn.commit()
-        cur.close()
-        conn.close()
-        return jsonify({'message': 'Post updated successfully'}), 200
-    except Exception as e:
-        print(f"Error occurred: {str(e)}")
-        return jsonify({'message': f'Error updating post: {str(e)}'}), 500
-    
+    result, status_code = update_blog_post(id, new_title, new_content, new_shortdescription, new_status, updated_at, new_tags, image_url)
+    if result['status'] == 'success':
+        return jsonify({'message': result['message']}), status_code
+    else:   
+        return jsonify({'message': result['message']}), status_code
+
 
 #delete existing blog post
 @app_bp.route('/deleteposts/<uuid:id>', methods = ['DELETE'])
 def delete_post(id):
-    try:
-        conn = psycopg2.connect(**db_info)
-        cur = conn.cursor()
-         # Retrieve the image filename from the database (adjust the column name if needed)
-        cur.execute("SELECT image_url FROM blog WHERE blogid = %s", (str(id),))
-        post = cur.fetchone()
-        
-        if post:
-            image_url = post[0]  # assuming the image URL is in the first column
-            
-            # Normalize path (convert backslashes to forward slashes)
-            image_url = image_url.replace("\\", "/")
-            if image_url.startswith('/static'):
-                image_url = image_url[7:]  # Remove '/static' from the start of the path
-
-            
-            # Construct the local file path
-            # Ensure we get the absolute path to the 'static' folder
-            static_folder_path = os.path.abspath('static')
-            image_path = os.path.join(static_folder_path, image_url.lstrip('/'))  # Remove leading slash from URL
-            
-            # Log the file path for debugging
-            print(f"Image path: {image_path}")
-            
-            # Check if the image exists and delete it
-            if os.path.exists(image_path):
-                print(f"Image exists, attempting to delete: {image_path}")
-                os.remove(image_path)
-                print(f"Image successfully deleted: {image_path}")
-            else:
-                print(f"Image not found at path: {image_path}")
-    
-        cur.execute("DELETE FROM blog WHERE blogid = %s", (str(id),))
-        conn.commit()
-        cur.close()
-        conn.close()
-        return jsonify({'message': 'Post deleted successfully'}), 200
-    except Exception as e:
-        return jsonify({'message': f'Error deleting post: {str(e)}'}), 500
+    result, status_code = delete_blog_post(id)
+    if result['status'] == 'success':
+        return jsonify({'message': result['message']}), status_code
+    else:
+        return jsonify({'message': result['message']}), status_code
    

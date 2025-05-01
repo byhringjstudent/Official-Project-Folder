@@ -4,7 +4,7 @@
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from flask import Flask, render_template, request, redirect, url_for, Blueprint
+from flask import Flask, render_template, url_for, Blueprint
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 from flask import jsonify

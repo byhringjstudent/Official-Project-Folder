@@ -35,7 +35,7 @@ const AccountPortal = () => {
         });
         if (!response.ok) throw new Error(`Status ${response.status}`);
         const data = await response.json();
-        setBlogs(data);
+        setBlogs(data.blogs);
       } catch (err) {
         console.error("Error fetching blogs:", err.message);
       } finally {
@@ -61,6 +61,7 @@ const AccountPortal = () => {
     if (response.ok) {
       // Remove the blog from the UI after deletion
       setBlogs(blogs.filter(blog => blog.blogID !== blogID));
+      alert('Blog deleted successfully!');
     } else {
       const data = await response.json();
       alert(data.message || 'Failed to delete post');

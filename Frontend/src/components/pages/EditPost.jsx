@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import './EditPost.css'; 
 
 function EditPost() {
   const { id } = useParams();
@@ -104,7 +105,7 @@ function EditPost() {
 
   return (
     <div>
-      <h2>Edit Post</h2>
+      <h3 className="edit-post-header">Edit Blog Post</h3>
       <input
         type="text"
         placeholder="Blog Title"

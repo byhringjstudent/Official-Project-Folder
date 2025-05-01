@@ -1,13 +1,8 @@
-from flask import request, jsonify, session, Blueprint, redirect, url_for, flash, make_response
-import psycopg2
-from psycopg2 import sql
+from flask import request, jsonify, session, Blueprint
 import bcrypt
 import os
 from dotenv import load_dotenv
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
 from flaskAppConfig import db_info
-from utils import create_unique_id
 from EmailVerification.email_verification_routes import send_verification_email
 from .account_db_functions import *
 
@@ -22,15 +17,15 @@ app_bp = Blueprint('account_routes', __name__)
 # last name from the request data and creates a new user in the database. It also sends a confirmation email to the newly created account.
 @app_bp.route('/register', methods=['POST'])
 def register_user():
+    #get user input from request data
     data = request.get_json()
-    email = data.get('email') #get email from request data
-    password = data.get('password')#get password from request data
-    firstName = data.get('firstName')#get first name from request data
-    lastName = data.get('lastName')#get last name from request data
+    email = data.get('email') 
+    password = data.get('password')
+    firstName = data.get('firstName')
+    lastName = data.get('lastName')
     
-    #check if the email, password, first name and last name are provided
+    #check if all required fields are provided
     if not email or not password or not firstName or not lastName:
-        #if not return jsonify with error message and 400 status code
         return jsonify({'message': 'Email, password, first and last name are required to register an account.'}), 400
     
     #hash the password using bcrypt
@@ -47,11 +42,11 @@ def register_user():
 # If the user exists and the password is correct, it creates a session for the user.
 @app_bp.route('/login', methods = ['POST'])
 def userLogin():
-    data = request.get_json()#get json data from request
-    email = data.get('email')#get email from request data
-    password = data.get('password')#get password from request data
+    #get user input from request data
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
     if session.get('accountid'):#check if the user is already logged in
-        #if the user is already logged in return jsonify with error message and 401 status code
         return jsonify({"message": 'User already logged in'}), 401
     if not email or not password: ##check if the email and password are provided
         return jsonify({'message': 'Email and Password are required to login.'}), 400
@@ -80,10 +75,8 @@ def sessionCheck():
 def userLogout():
     try:
         session.clear()#clear the session to log out the user
-        #flash('You have been logged out.')
-        #print('User logged out successfully', dict(session)) #debugging statement to check if the user is logged out successfully
         response = jsonify({'message': 'User logged out successfully'})
-        response.set_cookie('session', '', expires=0)  # optional: clears cookie
+        response.set_cookie('session', '', expires=0)  #clears cookie
         return response, 200 #return success message if the user is logged out successfully
     except Exception as e:
         return jsonify({'message': f'Log out unsuccessful: {str(e)}'}), 500   #return error message if there is an error logging out the user
@@ -95,7 +88,6 @@ def userLogout():
 def viewAccountDetails():
     accountid = session.get('accountid')#get the account ID from the session
     if not accountid: ##check if the account ID is not in the session
-        #if the account ID is not in the session return jsonify with error message and 401 status code
         return jsonify({'message': 'User not logged in'}), 401
     
     result, status_code = get_user_info(accountid)
@@ -105,168 +97,107 @@ def viewAccountDetails():
         
     return jsonify({'message': result['message'] if 'message' in result else 'User logged in successfully'}), status_code
 
+#Purpose: This route is used to display the blog posts of a user in their account portal.
+# It checks if the user is logged in and if they are, it retrieves the blog posts from the database and returns them.
+# If the user is not logged in, it returns an error message.
 @app_bp.route('/blog-posts', methods = ['get'])
 def get_blog_posts():
     accountid = session.get('accountid') #get the account ID from the session
     if not accountid: #check if the account ID is not in the session    
-        return jsonify({'message': 'User not logged in'}), 401 #if the account ID is not in the session return jsonify with error message and 401 status code
-    try:
-        conn = psycopg2.connect(**db_info)
-        cur = conn.cursor()
-        cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, status, shortdescription, tags FROM blog WHERE accountid = %s ORDER BY dateposted DESC", (accountid,)) #query to get the blog posts from the database
-        posts = cur.fetchall() #get the result of the query
-        cur.close()
-        conn.close()
-        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%B %d, %Y"), "status": post[4], "shortdescription": post[5], "tags": post[6]} for post in posts] #format the result into a list of dictionaries
-        return jsonify(posts_data), 200 #return success message with the blog posts 
-    except Exception as e:
-        return jsonify({'message': f'Error retrieving blog posts: {str(e)}'}), 500
+        return jsonify({'message': 'User not logged in'}), 401
+    result, status_code = get_user_blogs(accountid) #get the user info from the database
+    if result['status'] == 'success':
+        #print(result['blogs'])
+        return jsonify({'blogs': result['blogs']}), status_code
 
+
+#Purpose: This route is used to display the draft blog posts of a user in their account portal.
+# It checks if the user is logged in and if they are, it retrieves the draft blog posts from the database and returns them.
 @app_bp.route('/draft-blog-posts', methods = ['get'])
 def get_draft_posts():
     accountid = session.get('accountid') #get the account ID from the session
-    if not accountid: #check if the account ID is not in the session    
-        return jsonify({'message': 'User not logged in'}), 401 #if the account ID is not in the session return jsonify with error message and 401 status code
-    try:
-        conn = psycopg2.connect(**db_info)
-        cur = conn.cursor()
-        cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, status FROM blog WHERE accountid = %s AND status = %s", (accountid, 'draft')) #query to get the blog posts from the database
-        posts = cur.fetchall() #get the result of the query
-        cur.close()
-        conn.close()
-        posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%B %d, %Y"), "status": post[4]} for post in posts] #format the result into a list of dictionaries
-        return jsonify(posts_data), 200 #return success message with the blog posts 
-    except Exception as e:
-        return jsonify({'message': f'Error retrieving blog posts: {str(e)}'}), 500
+    if not accountid:    
+        return jsonify({'message': 'User not logged in'}), 401 
+    
+    result, status_code = get_user_drafts(accountid) #get the user info from the database
+    if result['status'] == 'success':
+        #print(result['blogs'])
+        return jsonify({'blogs': result['drafts']}), status_code
        
 
 
-    
-
+#Purpose: This route is used to edit the account details of a user. It checks if the user is logged in and if they are,
+#it retrieves the account details from the database and updates them.
+# If the user is not logged in, it returns an error message.
+# It also checks if the new email already exists in the database and if it does, it returns an error message.
 @app_bp.route('/edit', methods=['PUT'])
 def editAccountDetails():
     data = request.get_json() #get json data from request
-    #currentEmail = data.get('currentEmail') #get current email from request data
-    newEmail = data.get('newEmail') #get new email from request data
-    newFirstName = data.get('firstName') #get new first name from request data
-    newLastName = data.get('lastName') #get new last name from request data
-    accountid = session.get('accountid') #get the account ID from the session
+    newEmail = data.get('newEmail') 
+    newFirstName = data.get('firstName') 
+    newLastName = data.get('lastName')
+    accountid = session.get('accountid') 
     
-    conn = psycopg2.connect(**db_info)
-    cur = conn.cursor()
+    if not accountid:
+        #if the account ID is not in the session return jsonify with error message and 401 status code
+        return jsonify({'message': 'User not logged in'}), 401
+    
+    result, status_code = update_user_info(accountid, newFirstName, newLastName, newEmail) #get the user info from the database
+    if result['status'] == 'success':
+        #if the user is logged in return jsonify with success message and 200 status code
+        return jsonify({'message': result['message'] if 'message' in result else 'User information updated successfully'}), status_code
+    else:
+        
+        return jsonify({'message': result['message'] if 'message' in result else 'User information not updated successfully'}), status_code
 
     
-
-    try:
-        if not newFirstName and not newLastName and not newEmail:
-            return jsonify({'message': f'Error updating account'}), 400 
-        if newFirstName: ##check if the new first name is provided
-            query = sql.SQL("UPDATE users set firstname = %s WHERE accountid = %s") #query to update the first name in the database
-            cur.execute(query, (newFirstName, accountid)) #execute the query with the new first name and account ID as parameters
-            
-
-        if newLastName:
-            query = sql.SQL("UPDATE users set lastname = %s WHERE accountid = %s") #query to update the last name in the database
-            cur.execute(query, (newLastName, accountid)) #execute the query with the new last name and account ID as parameters
-
-        
-        if newEmail:
-            cur.execute("SELECT email FROM users WHERE email = %s", (newEmail,)) #check if the new email already exists in the database
-            result = cur.fetchone() #get the result of the query
-            if result: #check if the result is not empty
-                #if the result is not empty return jsonify with error message and 409 status code
-                return jsonify({'message': 'Email already exists.'}), 409
-            query = sql.SQL("UPDATE users set email = %s WHERE accountid = %s") ##query to update the email in the database
-            cur.execute(query, (newEmail, accountid)) ##execute the query with the new email and account ID as parameters
-            cur.execute("UPDATE users SET verifiedemail = FALSE WHERE accountid = %s", (accountid,)) #set the verified email to false in the database
-            send_verification_email(newEmail) #send confirmation email to the new email address. Function located in email_verification_routes.py
-        
-        
-        conn.commit()
-        return jsonify({'message': "Account updated successfully"}), 200
-
-    except Exception as e:
-        conn.rollback()
-        return jsonify({'message': f'Error updating account: {str(e)}'}), 500
-    finally:
-        cur.close()
-        conn.close()
     
-
+#Purpose: This route is used to update the password of a user. It checks if the user is logged in and if they are, it retrieves the account details from the database and updates them.
+# If the user is not logged in, it returns an error message.
+# It also checks if the new password and current password are provided and if they are not, it returns an error message.
+# It also checks if the current password is correct and if it is not, it returns an error message.
 @app_bp.route('/updatePassword', methods = ['PUT'])
 def updatePassword():
+    #get user input from request data
     data = request.get_json()
-    currentPassword = data.get('currentPassword') #get current password from request data
-    newPassword = data.get('newPassword') #get new password from request data
-    accountid = session.get('accountid') #get the account ID from the session
+    currentPassword = data.get('currentPassword') 
+    newPassword = data.get('newPassword') 
+    accountid = session.get('accountid') 
     
-    if newPassword == currentPassword:
-        return jsonify({'message': 'Passwords are the same'}), 401
+    if not accountid:
+        return jsonify({'message': 'User not logged in'}), 401
+    
+    if not newPassword or not currentPassword:
+        return jsonify({'message': 'New password and current password are required to update password.'}), 400
 
-    conn = psycopg2.connect(**db_info) #connect to db  
-    cur = conn.cursor() #create cursor
-    try:
-        query = sql.SQL("SELECT password FROM users WHERE accountid = %s") #query to get the password from the database
-        cur.execute(query, (accountid,)) #execute the query with the account ID as a parameter
-        resultPassword = cur.fetchone() #get the result of the query
-        
-        if resultPassword: #check if the result is not empty
-            #if the result is not empty get the password from the result
-            stored_hash= resultPassword[0]
-            if bcrypt.checkpw(currentPassword.encode('utf-8'), stored_hash.encode('utf-8')): #check if the input password matches the stored password
-                #if the password matches hash the new password and update it in the database
-                hashed_password = bcrypt.hashpw(newPassword.encode('utf-8'), bcrypt.gensalt())
-                hashed_password_str = hashed_password.decode('utf-8')
-                query = sql.SQL("UPDATE users SET password = %s WHERE accountid = %s") #query to update the password in the database
-                cur.execute(query, (hashed_password_str, accountid)) #execute the query with the new password and account ID as parameters
-                conn.commit()
-                return jsonify({'message': 'Password updated successfully'}), 201 #return success message if the password is updated successfully
-            else:
-                return jsonify({'message': 'Incorrect current Password'}), 401 #return error message if the current password does not match
-        else:
-            return jsonify({'message': 'Account ID not found'}), 404
-        
-    except Exception as e:
-        return jsonify({'message': f'Error updating password: {str(e)}'}), 500
+    result, status_code = update_user_password(accountid, currentPassword, newPassword) #get the user info from the database
+    if result['status'] == 'success':
+        #if the user is logged in return jsonify with success message and 200 status code
+        return jsonify({'message': result['message'] if 'message' in result else 'User password updated successfully'}), status_code
+    else:
+        return jsonify({'message': result['message'] if 'message' in result else 'User password not updated successfully'}), status_code
          
 
-    
-  
-    
-#delete account route
+#Purpose: This route is used to delete the account of a user. It checks if the user is logged in and if they are, it retrieves the account details from the database and deletes them.
+# If the user is not logged in, it returns an error message.
 @app_bp.route('/deleteAccount', methods = ['POST'])
 def deleteAccount():
     data = request.get_json()
     password = data.get('password')
-    conn = psycopg2.connect(**db_info) #connect to the database
-    cur = conn.cursor() 
     accountid = session.get('accountid') #get the account ID from the session
-    print(f"Account ID from session: {accountid}")
-    try:
-        query = sql.SQL("SELECT password FROM users WHERE accountid = %s") #query to get the password from the database
-        cur.execute(query, (accountid,)) #execute the query with the account ID as a parameter
-        resultPassword = cur.fetchone() #get the result of the query
-        if resultPassword:
-            stored_hash = resultPassword[0]
-            if bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')): #check if the input password matches the stored password
-                #if the password matches hash the new password and update it in the database
-                deleteAccount =sql.SQL("DELETE FROM account WHERE accountid = %s") #query to delete the account from the database
-                cur.execute(deleteAccount, (accountid,)) ##delete the account from the database
+    #print(f"Account ID from session: {accountid}")
+    status, status_code = delete_user(accountid, password) #get the user info from the database
+    if status['status'] == 'success':
+        session.clear()
+        return jsonify({'message': status['message'] if 'message' in status else 'User account deleted successfully'}), status_code
+    else:  
+        return jsonify({'message': status['message'] if 'message' in status else 'User account not deleted successfully'}), status_code
         
-                conn.commit()
-                cur.close()
-                conn.close()
-                session.clear()
-                response = jsonify({'message': 'Account deleted successfully'})
-                response.set_cookie('session', '', expires=0)  # optional: clears cookie
-                return response, 200 
-            else:   
-                return jsonify({'message': 'Incorrect Password'}), 400
-        else:
-            return jsonify({'message': 'Account ID not found'}), 404
-    except Exception as e: 
-        return jsonify({'message': f'Error deleting account: {str(e)}'}),500
-
+  
+#Purpose: This route is used to check if the user is logged in or not. 
+# It checks if the account ID is in the session and if it is, it returns a success
+#  message with the account ID.
+# If the account ID is not in the session, it returns an error message.
 @app_bp.route('/check-auth', methods = ['GET'])
 def check_auth():
     if 'accountid' in session:
@@ -274,6 +205,14 @@ def check_auth():
     else:
         return jsonify({'loggedIn': False}), 401
     
+
+
+
+
+
+
+
+
 
 #CURL COMMANDS FOR TESTING DIFFERENT ROUTES 
              
