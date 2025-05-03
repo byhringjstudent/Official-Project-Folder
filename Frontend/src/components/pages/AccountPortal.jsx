@@ -113,6 +113,7 @@ const AccountPortal = () => {
           <a href="mailto:legacyiqdevteam@outlook.com" className="text-blue-500 hover:underline">
           ✉️ legacyiqdevteam@outlook.com
           </a>
+          <p></p>
           <h5>© 2025 LegacyIQ</h5>
         </nav>
       </aside>
@@ -139,12 +140,14 @@ const AccountPortal = () => {
               <small>{new Date(blog.date).toLocaleDateString()}</small>
               <p></p>
               <a href={`/blog/${blog.blogID}`}>Read more →</a>
-              <button onClick={() => deleteBlog(blog.blogID)} className="delete-button">
-                Delete
-              </button>
+              <div className = "button-group">
               <button onClick={() => navigate(`/edit-post/${blog.blogID}`)} className="edit-button">
                 Edit
               </button>
+              <button onClick={() => deleteBlog(blog.blogID)} className="delete-button">
+                Delete
+              </button>
+              </div>
             </div>
           ))
         )}

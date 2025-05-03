@@ -154,9 +154,9 @@ function EditPost() {
         )}
       <input type="file" accept="image/*" onChange={handleImageChange} />
       {imagePreview && <img src={imagePreview} alt="Image Preview" className="preview-image" />}
-      <div>
-        <button onClick={() => handleSave('draft')}>Save as Draft</button>
-        <button onClick={() => handleSave('published')}>Publish</button>
+      <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+        <button onClick={() => handleSave('published')} className="publish-button">Publish</button>
+        <button onClick={() => handleSave('draft')} className="draft-button">Save as Draft</button>
       </div>
     </div>
   );
