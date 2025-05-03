@@ -81,10 +81,11 @@
   }
 
   .preview-image {
-    width: 100%;         
+    width: auto;         
     max-width: 600px;    
-    height: 300px;       
-    object-fit: cover;   
+    height: auto;       
+    max-height: 300px;
+    object-fit: contain;   
     border-radius: 8px;  
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
   }
