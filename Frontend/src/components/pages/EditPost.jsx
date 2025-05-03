@@ -106,24 +106,28 @@ function EditPost() {
   return (
     <div>
       <h3 className="edit-post-header">Edit Blog Post</h3>
+      <small className="blog-labels">Blog Title</small>
       <input
         type="text"
         placeholder="Blog Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
+      <small className="blog-labels">Short Description</small>
       <textarea
         placeholder="Short Description about your post"
         value={shortDesc}
         onChange={(e) => setShortDesc(e.target.value)}
         maxLength={150}
       />
+      <small className="blog-labels">Blog Content</small>
       <textarea
         type="text"
         placeholder="Content of your post"
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
+      <small className="blog-labels">Tags That Relate to Blog</small>
       <input
         type="text"
         placeholder="Enter topic and press Enter"
@@ -144,6 +148,7 @@ function EditPost() {
             <button onClick={() => handleRemoveTag(tag)}>X</button>  {/* Add a button to remove tag */}
             </span>
         ))}
+        <p> </p>
         </div>
       {post.image_url && (
                   <img
@@ -152,6 +157,7 @@ function EditPost() {
                     className="post-image"
                   />
         )}
+        <small className="blog-labels">Upload Image</small>
       <input type="file" accept="image/*" onChange={handleImageChange} />
       {imagePreview && <img src={imagePreview} alt="Image Preview" className="preview-image" />}
       <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
