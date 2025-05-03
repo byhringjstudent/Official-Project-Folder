@@ -107,7 +107,7 @@ const AccountPortal = () => {
           <ul>
             <li><a href="/edit-profile">👤 Edit Profile</a></li>
             <li><a href="/change-password">🔒 Change Password</a></li>
-            <li><a href="/account-deletion">🔒 Delete Account</a></li>
+            <li><a href="/account-deletion">❌ Delete Account</a></li>
           </ul>
         </nav>
       </aside>
@@ -116,7 +116,7 @@ const AccountPortal = () => {
         <h2>Welcome to your Account Portal</h2>
         <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
         <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Verified:</strong> {user.verifiedemail ? 'Yes' : 'No'}</p>
+        <p><strong>Verified:</strong> {user.verifiedemail ? '✅ Yes' : ' ❌ No'}</p>
   
         <hr />
   

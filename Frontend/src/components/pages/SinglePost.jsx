@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'; // To get the post ID from the URL
 import './SinglePost.css';
+import './Home.css';
 
 const SinglePost = () => {
   const { id } = useParams(); // Get the post ID from the URL
@@ -69,6 +70,7 @@ const SinglePost = () => {
           </small>
           <p>{post.content}</p>
           <small>{new Date(post.date).toLocaleDateString()}</small>
+          <p> </p>
 
           {/* Display Image */}
           {post.image_url && (

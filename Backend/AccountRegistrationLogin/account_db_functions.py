@@ -135,10 +135,7 @@ def get_user_blogs(accountid):
         
         posts_data = [{"blogID": post[0], "title": post[1], "content": post[2], "date": post[3].strftime("%B %d, %Y"), "status": post[4], "shortdescription": post[5], "tags": post[6]} for post in posts] #format the result into a list of dictionaries
         
-        return {
-            'status': 'success',
-            'blogs': posts_data  
-        }, 200
+        return {'status': 'success','blogs': posts_data }, 200
         
     except psycopg2.Error as e:
         print("Database error:", e)

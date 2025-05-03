@@ -153,7 +153,7 @@ function EditPost() {
                   />
         )}
       <input type="file" accept="image/*" onChange={handleImageChange} />
-      {imagePreview && <img src={imagePreview} alt="Image Preview" width="100" />}
+      {imagePreview && <img src={imagePreview} alt="Image Preview" className="preview-image" />}
       <div>
         <button onClick={() => handleSave('draft')}>Save as Draft</button>
         <button onClick={() => handleSave('published')}>Publish</button>
