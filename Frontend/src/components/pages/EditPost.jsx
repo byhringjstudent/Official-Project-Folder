@@ -106,6 +106,7 @@ function EditPost() {
   return (
     <div>
       <h3 className="edit-post-header">Edit Blog Post</h3>
+      <div className="blog-form-section">
       <small className="blog-labels">Blog Title</small>
       <input
         type="text"
@@ -164,6 +165,7 @@ function EditPost() {
         <button onClick={() => handleSave('published')} className="publish-button">Publish</button>
         <button onClick={() => handleSave('draft')} className="draft-button">Save as Draft</button>
       </div>
+    </div>
     </div>
   );
 }
