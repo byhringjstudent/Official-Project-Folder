@@ -109,6 +109,11 @@ const AccountPortal = () => {
             <li><a href="/change-password">🔒 Change Password</a></li>
             <li><a href="/account-deletion">❌ Delete Account</a></li>
           </ul>
+          <h4>Need Help? Email Support at:</h4>
+          <a href="mailto:legacyiqdevteam@outlook.com" className="text-blue-500 hover:underline">
+          ✉️ legacyiqdevteam@outlook.com
+          </a>
+          <h5>© 2025 LegacyIQ</h5>
         </nav>
       </aside>
   
@@ -145,6 +150,7 @@ const AccountPortal = () => {
         )}
       </main>
     </div>
+    
   )};
 
 export default AccountPortal;

@@ -77,7 +77,15 @@ export default function Home() {
           </div>
         )}
       </section>
-
+         {/* Section 8: Footer */}
+         <footer className="footer">
+        <p>© 2025 LegacyIQ · Privacy · For Support, Contact us at {""}
+          <a href="mailto:legacyiqdevteam@outlook.com" className="text-blue-500 hover:underline">
+          legacyiqdevteam@outlook.com
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
+
