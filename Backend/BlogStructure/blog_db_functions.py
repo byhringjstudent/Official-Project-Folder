@@ -193,7 +193,7 @@ def search_all_posts(userSearch, accountid):
         conn = psycopg2.connect(**db_info) #connect to the database
         cur = conn.cursor()
         if userSearch:
-            cur.execute("SELECT blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, status FROM blog WHERE accountid = %s AND (blogtitle ILIKE %s OR EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE %s) OR shortdescription ILIKE %s) ORDER BY dateposted DESC",(accountid,f'%{userSearch}',f'%{userSearch}',f'%{userSearch}'))
+            cur.execute("SELECT blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, status FROM blog WHERE accountid = %s AND (blogtitle ILIKE %s OR EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE %s) OR shortdescription ILIKE %s OR status ILIKE %s) ORDER BY dateposted DESC",(accountid,f'%{userSearch}',f'%{userSearch}',f'%{userSearch}', f'%{userSearch}'))
             posts = cur.fetchall()
             if posts:
                 posts_data = [{"title": post[0],"content": post[1], "date": post[2].strftime("%B %d, %Y"), "image_url" : post[3],"shortdescription" : post[4],"tags" : post[5], "status":post[6]}for post in posts]

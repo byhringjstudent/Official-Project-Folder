@@ -55,7 +55,8 @@ export default function CreatePost() {
       });
 
       if (!response.ok) throw new Error('Blog creation failed');
-      alert('Blog published successfully!');
+      alert('Blog created successfully!');
+      navigate('/account-portal')
       resetForm();
     } catch (err) {
       alert('Error: ' + err.message);

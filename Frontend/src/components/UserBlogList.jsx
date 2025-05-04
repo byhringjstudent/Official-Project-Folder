@@ -11,7 +11,8 @@ const BlogList = ({ blogs, deleteBlog, query, setQuery }) => {
       const filtered = blogs.filter(blog =>
         blog.title.toLowerCase().includes(query.toLowerCase()) ||
         blog.shortdescription.toLowerCase().includes(query.toLowerCase()) ||
-        (blog.tags && blog.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))) // Check tags if present
+        (blog.tags && blog.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))) ||
+        blog.status.toLowerCase().includes(query.toLowerCase()) // Check tags if present
       );
       setFilteredBlogs(filtered);
     } else {
