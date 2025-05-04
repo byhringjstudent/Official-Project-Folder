@@ -185,4 +185,29 @@ def delete_post(id):
         return jsonify({'message': result['message']}), status_code
     else:
         return jsonify({'message': result['message']}), status_code
+
+#purpose: Allow user to search for specific blogs, based on tags, title, or short description. 
+#this route is specifically for the blog page, it will only return publshed blogs.
+@app_bp.route('/search-published-post', methods = ['GET'])
+def search_published_blogs():
+    query = request.args.get('q', '').strip()
+    result, status_code = search_published_posts(query)
+    if result['status'] == 'success':
+        return jsonify({'status': 'success','post': result['post']}), status_code
+    else:
+        return jsonify({'status': 'error','message': result['message']}), status_code
+    
+    
+#purpose: Allow user to search for specific blogs, based on tags, title, or short description. 
+#this route is specifically for the acount portal page, it will return all blogs whether publshed or saved as draft.
+@app_bp.route('/search-all-post', methods = ['GET'])
+def search_all_blogs():
+    accountid = session.get('accountid')
+    query = request.args.get('q', '').strip()
+    result, status_code = search_all_posts(query,accountid)
+    if result['status'] == 'success':
+        return jsonify({'status': 'success','post': result['post']}), status_code
+    else:
+        return jsonify({'status': 'error','message': result['message']}), status_code
+    
    

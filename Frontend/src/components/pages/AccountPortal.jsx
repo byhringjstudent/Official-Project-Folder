@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './AccountPortal.css';
 import { useNavigate } from 'react-router-dom';
+import BlogList from "../UserBlogList";
 
 const AccountPortal = () => {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ const AccountPortal = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
@@ -24,8 +25,6 @@ const AccountPortal = () => {
         setError(err.message);
       }
     };
-
-      
 
     const fetchUserBlogs = async () => {
       try {
@@ -47,19 +46,15 @@ const AccountPortal = () => {
     fetchUserBlogs();
   }, []);
 
-
-
   const deleteBlog = async (blogID) => {
     const response = await fetch(`http://localhost:5000/blog/deleteposts/${blogID}`, {
-      method: 'DELETE', // DELETE method
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
-  
     if (response.ok) {
-      // Remove the blog from the UI after deletion
       setBlogs(blogs.filter(blog => blog.blogID !== blogID));
       alert('Blog deleted successfully!');
     } else {
@@ -96,7 +91,7 @@ const AccountPortal = () => {
     <div className="account-page">
       <aside className="sidebar">
         <div className="logo">🌿 LegacyIQ</div>
-        <input type="text" placeholder="Search" className="search-bar" />
+
         <nav className="menu">
           <h4>Dashboard</h4>
           <ul>
@@ -111,50 +106,29 @@ const AccountPortal = () => {
           </ul>
           <h4>Need Help? Email Support at:</h4>
           <a href="mailto:legacyiqdevteam@outlook.com" className="text-blue-500 hover:underline">
-          ✉️ legacyiqdevteam@outlook.com
+            ✉️ legacyiqdevteam@outlook.com
           </a>
           <p></p>
           <h5>© 2025 LegacyIQ</h5>
         </nav>
       </aside>
-  
+
       <main className="account-content">
         <h2>Welcome to your Account Portal</h2>
         <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Verified:</strong> {user.verifiedemail ? '✅ Yes' : ' ❌ No'}</p>
-  
+
         <hr />
-  
         <h3>Your Blog Posts</h3>
         {blogs.length === 0 ? (
           <p>No blog posts yet.</p>
         ) : (
-          blogs.map((blog) => (
-            <div key={blog.blogID} className="user-blog-preview">
-              <h4>{blog.title}</h4>
-              <p className={`blog-status ${blog.status === 'published' ? 'published' : 'draft'}`}>
-                {blog.status === 'published' ? 'Published' : 'Draft'}
-              </p>
-              <p>{blog.shortdescription}</p>
-              <small>{new Date(blog.date).toLocaleDateString()}</small>
-              <p></p>
-              <a href={`/blog/${blog.blogID}`}>Read more →</a>
-              <div className = "button-group">
-              <button onClick={() => navigate(`/edit-post/${blog.blogID}`)} className="edit-button">
-                Edit
-              </button>
-              <button onClick={() => deleteBlog(blog.blogID)} className="delete-button">
-                Delete
-              </button>
-              </div>
-            </div>
-          ))
+          <BlogList blogs={blogs} deleteBlog={deleteBlog} editBlog={editBlog} query={query} setQuery={setQuery} />
         )}
       </main>
     </div>
-    
-  )};
+  );
+};
 
 export default AccountPortal;
-

@@ -65,7 +65,7 @@ def get_blog_post_by_id(blogid,accountid):
     try:
         conn = psycopg2.connect(**db_info) #connect to the database
         cur = conn.cursor()
-        cur.execute("SELECT blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, status FROM blog WHERE blogid = %s and accountid = %s",(str(blogid), str(accountid)))
+        cur.execute("SELECT blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, status, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE blogid = %s",(str(blogid),))
         post = cur.fetchone()
         if post:
             post_data = [{"title": post[0],"content": post[1], "date": post[2].strftime("%B %d, %Y"), "image_url" : post[3],"shortdescription" : post[4],"tags" : post[5],"status": post[6]}]
@@ -114,7 +114,6 @@ def delete_blog_post(blogid):
     try:
         conn = psycopg2.connect(**db_info) #connect to the database
         cur = conn.cursor()
-        cur = conn.cursor()
          # Retrieve the image filename from the database (adjust the column name if needed)
         cur.execute("SELECT image_url FROM blog WHERE blogid = %s", (str(blogid),))
         post = cur.fetchone()
@@ -156,4 +155,63 @@ def delete_blog_post(blogid):
             cur.close()
 
 
+#purpose: this function allows users to search for blogs based on their short description, title, or tags.
+#This function will only return posts that are publshed because that is all that
+#should be displayed on the blog page. 
+def search_published_posts(userSearch):
+    try:
+        conn = psycopg2.connect(**db_info) #connect to the database
+        cur = conn.cursor()
+        if userSearch:
+            cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' AND (blogtitle ILIKE %s OR EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE %s) OR shortdescription ILIKE %s) ORDER BY dateposted DESC",(f'%{userSearch}',f'%{userSearch}',f'%{userSearch}'))
+        else:
+            cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' AND (blogtitle ILIKE %s OR EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE %s) OR shortdescription ILIKE %s) ORDER BY dateposted DESC",(f'%{userSearch}',f'%{userSearch}',f'%{userSearch}'))
+        posts = cur.fetchall()
+        
+        if posts:
+            print(posts)
+            posts_data = [{"blogID": post[0], "title": post[1],"content": post[2], "date": post[3].strftime("%B %d, %Y"), "image_url" : post[4],"shortdescription" : post[5],"tags" : post[6], "firstName": post[7], "lastName": post[8]} for post in posts]
+            return {'status': 'success', 'post': posts_data}, 200
+        else:
+            return {'status': 'error', 'message': 'No posts found'}, 200
+        
+    except psycopg2.Error as e:
+        #print(str(e))
+        return {'status': 'error', 'message': str(e)}, 500
+    
+    finally:
+        if conn:
+            conn.close()
+        if cur:
+            cur.close()
+            
+#Purpose: Search all posts whether published or a draft.
+#This would be used in the account portal when a user is searching their own
+#blogs.       
+def search_all_posts(userSearch, accountid):
+    try:
+        conn = psycopg2.connect(**db_info) #connect to the database
+        cur = conn.cursor()
+        if userSearch:
+            cur.execute("SELECT blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, status FROM blog WHERE accountid = %s AND (blogtitle ILIKE %s OR EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE %s) OR shortdescription ILIKE %s) ORDER BY dateposted DESC",(accountid,f'%{userSearch}',f'%{userSearch}',f'%{userSearch}'))
+            posts = cur.fetchall()
+            if posts:
+                posts_data = [{"title": post[0],"content": post[1], "date": post[2].strftime("%B %d, %Y"), "image_url" : post[3],"shortdescription" : post[4],"tags" : post[5], "status":post[6]}for post in posts]
+                return {'status': 'success', 'post': posts_data}, 200
+            else:
+                return {'status': 'error', 'message': 'No results'}, 500
+        else:
+            return {'status': 'error', 'message': 'No search given'}, 500
+        
+    except psycopg2.Error as e:
+        print(str(e))
+        return {'status': 'error', 'message': str(e)}, 500
+    
+    finally:
+        if conn:
+            conn.close()
+        if cur:
+            cur.close()
+        
+        
 
