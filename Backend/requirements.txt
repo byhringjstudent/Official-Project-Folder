@@ -4,7 +4,6 @@ flask_session
 psycopg2 
 bcrypt  
 datetime 
-zoneinfo 
 pytz 
 sendgrid
 itsdangerous

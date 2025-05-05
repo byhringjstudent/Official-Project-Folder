@@ -13,7 +13,7 @@ const SinglePost = () => {
     // Fetch the post data from the backend
     const fetchPost = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/blog/get-single-post/${id}`, {
+        const response = await fetch(`/api/blog/get-single-post/${id}`, {
           method: 'GET',
           credentials: 'include', // Ensure cookies are sent with the request
         });
@@ -66,7 +66,7 @@ const SinglePost = () => {
     <p>{new Date(post.date).toLocaleDateString()}</p>
     {post.image_url && (
       <img
-        src={`http://localhost:5000${post.image_url}`}
+        src={post.image_url}
         alt="Blog Post"
         className="post-image"
       />

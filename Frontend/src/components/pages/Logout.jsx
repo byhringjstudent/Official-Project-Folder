@@ -8,7 +8,7 @@ const Logout = ({ setIsLoggedIn }) => {
     const logout = async () => {
       try {
         // Send request to backend to clear session
-        const response = await fetch('http://localhost:5000/account/logout', {
+        const response = await fetch('/api/account/logout', {
           method: 'POST',
           credentials: 'include', // Make sure to include credentials (cookies)
         });

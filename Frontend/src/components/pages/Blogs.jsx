@@ -21,7 +21,7 @@ export default function Home() {
     setLoading(true);
     setErrorMessage('');
     try {
-      const response = await fetch(`http://localhost:5000/blog/search-published-post`, {
+      const response = await fetch(`/api/blog/search-published-post`, {
         method: 'GET',
         credentials: 'include',
       });

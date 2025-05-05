@@ -48,7 +48,7 @@ export default function CreatePost() {
     formData.append('status', status)
 
     try {
-      const response = await fetch('http://localhost:5000/blog/createposts', {
+      const response = await fetch('/api/blog/createposts', {
         method: 'POST',
         credentials: 'include',
         body: formData,

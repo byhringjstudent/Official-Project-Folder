@@ -9,7 +9,7 @@ export default function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/blog/read-latest-posts', {
+        const response = await fetch('/api/blog/read-latest-posts', {
           method: 'GET',
           credentials: 'include',
         });
@@ -124,7 +124,7 @@ export default function Home() {
                 {/* Display Image */}
                 {post.image_url && (
                   <img
-                    src={`http://localhost:5000${post.image_url}`} // Adjust the URL as needed
+                    src={post.image_url} // Adjust the URL as needed
                     alt="Blog Post"
                     className="post-image"
                   />

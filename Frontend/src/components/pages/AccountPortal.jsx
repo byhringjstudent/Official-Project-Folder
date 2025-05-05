@@ -14,7 +14,7 @@ const AccountPortal = () => {
   useEffect(() => {
     const fetchAccountDetails = async () => {
       try {
-        const response = await fetch("http://localhost:5000/account/viewAccountDetails", {
+        const response = await fetch("/api/account/viewAccountDetails", {
           method: 'GET',
           credentials: 'include',
         });
@@ -28,7 +28,7 @@ const AccountPortal = () => {
 
     const fetchUserBlogs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/account/blog-posts", {
+        const response = await fetch("/api/account/blog-posts", {
           method: 'GET',
           credentials: 'include',
         });
@@ -47,7 +47,7 @@ const AccountPortal = () => {
   }, []);
 
   const deleteBlog = async (blogID) => {
-    const response = await fetch(`http://localhost:5000/blog/deleteposts/${blogID}`, {
+    const response = await fetch(`/api/blog/deleteposts/${blogID}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const AccountPortal = () => {
   
 
   const editBlog = async (blogID) => {
-    const response = await fetch(`http://localhost:5000/blog/updateposts/${blogID}`, {
+    const response = await fetch(`/api/blog/updateposts/${blogID}`, {
       method: 'PUT', // Use PUT or PATCH for updating
       headers: {
         'Content-Type': 'application/json',

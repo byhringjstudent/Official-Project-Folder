@@ -21,7 +21,7 @@ export default function Register() {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/account/register', {
+      const response = await fetch('/api/account/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
@@ -34,9 +34,9 @@ export default function Register() {
         localStorage.removeItem('isLoggedIn');
         sessionStorage.removeItem('isLoggedIn');
         document.cookie = 'sessionid=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
-        setTimeout(() => {
-          navigate('/');
-        }, 1500); // 1500 milliseconds = 1.5 seconds
+          setTimeout(() => {
+            navigate('/');
+          }, 1500); // 1500 milliseconds = 1.5 seconds
       } else {
         setMessage(data.message || 'Something went wrong.');
       }
