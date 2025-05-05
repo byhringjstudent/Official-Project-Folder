@@ -49,7 +49,7 @@
 
 /* Sidebar */
 .sidebar {
-  width: 360px;
+  width: 275px;
   background-color: #1f2a38;
   padding: 1.5rem 1rem;
   border-right: 1px solid #34495e;
@@ -172,3 +172,12 @@ hr {
   text-decoration: underline;
 }
 
+.blog-search-bar {
+  width: 100%;
+  max-width: 750px;
+  margin: 0 auto 20px auto;
+  display: block;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #b8b0b0;
+  }

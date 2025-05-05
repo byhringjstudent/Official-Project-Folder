@@ -163,13 +163,13 @@ def search_published_posts(userSearch):
         conn = psycopg2.connect(**db_info) #connect to the database
         cur = conn.cursor()
         if userSearch:
-            cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' AND (blogtitle ILIKE %s OR EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE %s) OR shortdescription ILIKE %s) ORDER BY dateposted DESC",(f'%{userSearch}',f'%{userSearch}',f'%{userSearch}'))
+            cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' AND (blogtitle ILIKE %s OR EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE %s) OR shortdescription ILIKE %s OR users.firstName ILIKE %s OR users.lastName ILIKE %s) ORDER BY dateposted DESC",(f'%{userSearch}',f'%{userSearch}',f'%{userSearch}',f'%{userSearch}',f'%{userSearch}'))
         else:
-            cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' AND (blogtitle ILIKE %s OR EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE %s) OR shortdescription ILIKE %s) ORDER BY dateposted DESC",(f'%{userSearch}',f'%{userSearch}',f'%{userSearch}'))
+            cur.execute("SELECT blogid, blogtitle, dbinstance, dateposted, image_url, shortdescription, tags, users.firstName, users.lastName FROM blog JOIN users on blog.accountid = users.accountid WHERE status = 'published' AND (blogtitle ILIKE %s OR EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE %s) OR shortdescription ILIKE %s OR users.firstName ILIKE %s OR users.lastName ILIKE %s) ORDER BY dateposted DESC",(f'%{userSearch}',f'%{userSearch}',f'%{userSearch}',f'%{userSearch}',f'%{userSearch}'))
         posts = cur.fetchall()
         
         if posts:
-            print(posts)
+            #print(posts)
             posts_data = [{"blogID": post[0], "title": post[1],"content": post[2], "date": post[3].strftime("%B %d, %Y"), "image_url" : post[4],"shortdescription" : post[5],"tags" : post[6], "firstName": post[7], "lastName": post[8]} for post in posts]
             return {'status': 'success', 'post': posts_data}, 200
         else:

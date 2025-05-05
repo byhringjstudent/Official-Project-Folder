@@ -2,18 +2,21 @@ import React, { useState, useEffect } from 'react';
 import './AccountPortal.css'; 
 import './Blogs.css'; 
 import debounce from 'lodash.debounce';
+import { useCallback } from 'react';
 
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
-  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState('idle');
   const [query, setQuery] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false); // Add loading state
 
 
   // Function to fetch posts from the backend
   const fetchPosts = async (searchQuery) => {
     setLoading(true);
+    setErrorMessage('');
     try {
       const response = await fetch(`http://localhost:5000/blog/search-published-post?q=${searchQuery}`, {
         method: 'GET',
@@ -24,37 +27,40 @@ export default function Home() {
         const data = await response.json();
         if (data.status === 'success') {
           setPosts(data.post); // Set posts returned by the backend
-          setMessage('');
+          setStatus('success')
         } else {
-          setMessage(data.message || 'No posts found');
           setPosts([]);
+          setStatus('error')
+          setErrorMessage(data.message || 'No posts found');
+          
         }
       } else {
-        setMessage('Failed to load posts');
         setPosts([]);
+        setStatus('error');
+        setErrorMessage('Failed to load posts');
+        
       }
     } catch (err) {
       console.error(err);
-      setMessage('Error fetching posts');
       setPosts([]);
+      setStatus('error');
+      setErrorMessage('Error fetching posts');
+      
     }finally {
       setLoading(false);
     }
   };
 
-  const debounceSearch = debounce((query) => {
-    fetchPosts(query);
-  }, 800);
+  const debounceSearch = useCallback(
+    debounce((query) => {
+      fetchPosts(query);
+    }, 800),
+    []
+  );
 
   const handleSearchChange = (e) => {
     setQuery(e.target.value);
-    debounceSearch(e.target.value);
   }
-
-     // Initial fetch to load posts on component mount
-  useEffect(() => {
-    fetchPosts('');  // Empty search query fetches all published posts
-  }, []);
 
   // Effect to trigger fetching when the query changes
   useEffect(() => {
@@ -78,12 +84,14 @@ export default function Home() {
           className="all-search-bar"
         />
         
-        {loading && <p>Loading...</p>}
+        {status === 'loading' && <p>Loading...</p>}
 
-        {message && <p>{message}</p>}
-        {!message && posts.length === 0 && <p>No posts available.</p>}
+        {status === 'error' && <p>{errorMessage}</p>}
 
-        {posts.length > 0 && (
+        {status === 'success' && posts.length === 0 && <p>No Posts Relate to Search.</p>}
+
+
+        {status === 'success' && posts.length > 0 && (
   <div className="blog-list">
   {posts.map((post, index) => (
   <div key={index} className="all-user-blog-preview">
