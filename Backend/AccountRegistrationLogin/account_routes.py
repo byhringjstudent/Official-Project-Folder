@@ -33,9 +33,17 @@ def register_user():
     hashed_password_str = hashed_password.decode('utf-8')
  
     result, status_code = create_user(email, hashed_password_str, firstName, lastName)
-    #send confirmation email to newly created account. Function located in email_verification_routes.py
-    send_verification_email(email)
-    return jsonify({'message': result['message'] if 'message' in result else 'User registered successfully'}), status_code #return success message if the user is registered successfully
+    if result['status'] == 'success':
+        send_verification_email(email)#send confirmation email to newly created account. Function located in email_verification_routes.py
+        result, status_code = login_user(email, password) #login the user after registration
+        if result['status'] == 'success':
+            session['accountid'] = result['accountid']
+            session['userid'] = result['userid']
+            return jsonify({'message': result['message'] if 'message' in result else 'User registered and logged in successfully'}), status_code #return success message if the user is registered and logged in successfully
+        else:
+            return jsonify({'message': result['message'] if 'message' in result else 'User registered successfully'}), status_code #return success message if the user is registered successfully
+    else:
+        return jsonify({'message': result['message'] if 'message' in result else 'User not registered successfully'}), status_code
 
 
 #Purpose: This route is used to login a user in the database. It takes the email and password from the request data and checks if the user exists in the database and verifies the password. 

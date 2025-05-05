@@ -65,11 +65,17 @@ def verify_email(token):
         cur = conn.cursor()
         cur.execute("UPDATE users SET verifiedemail = TRUE WHERE email = %s", (email,)) #updating the database to set the email as verified
         conn.commit()
+        cur.execute("SELECT firstname FROM users WHERE email = %s", (email,))
+        user = cur.fetchone()
+        if user:
+            first_name = user[0]
+        else:
+            print("User not found in the database.")
         cur.close()
         conn.close()
-        return render_template('verification_success.html', message="Your email address has been successfully verified!")
+        return render_template('verification_success.html', message=f"Congratulations {first_name}! Your email at: {email}, has been successfully verified!")
     else:
-        return render_template('verification_error.html', message="Sorry, your verification link is invalid or expired.")
+        return render_template('verification_error.html', message=f"Sorry {first_name} , your verification link is invalid or expired.")
  
 def confirm_token(token, expiration = 3600): #confirming the token
     try:
