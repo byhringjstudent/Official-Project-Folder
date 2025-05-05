@@ -5,11 +5,14 @@ import debounce from 'lodash.debounce';
 import { useCallback } from 'react';
 
 
+
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [status, setStatus] = useState('idle');
   const [query, setQuery] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [allPosts, setAllPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(false); // Add loading state
 
 
@@ -18,7 +21,7 @@ export default function Home() {
     setLoading(true);
     setErrorMessage('');
     try {
-      const response = await fetch(`http://localhost:5000/blog/search-published-post?q=${searchQuery}`, {
+      const response = await fetch(`http://localhost:5000/blog/search-published-post`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -26,23 +29,27 @@ export default function Home() {
       if (response.ok) {
         const data = await response.json();
         if (data.status === 'success') {
-          setPosts(data.post); // Set posts returned by the backend
+          setAllPosts(data.post); // Set posts returned by the backend
+          setFilteredPosts(data.post); // Set filtered posts to all posts initially
           setStatus('success')
         } else {
-          setPosts([]);
+          setAllPosts([]);
+          setFilteredPosts([]); // Clear filtered posts if no posts found
           setStatus('error')
           setErrorMessage(data.message || 'No posts found');
           
         }
       } else {
-        setPosts([]);
+        setAllPosts([]);
+        setFilteredPosts([]);
         setStatus('error');
         setErrorMessage('Failed to load posts');
         
       }
     } catch (err) {
       console.error(err);
-      setPosts([]);
+      setAllPosts([]);
+      setFilteredPosts([]);
       setStatus('error');
       setErrorMessage('Error fetching posts');
       
@@ -52,24 +59,30 @@ export default function Home() {
   };
 
   const debounceSearch = useCallback(
-    debounce((query) => {
-      fetchPosts(query);
-    }, 800),
-    []
+    debounce((searchVal) => {
+      const lowerQuery = searchVal.toLowerCase().trim();;
+      const filtered = allPosts.filter(post =>
+      post.title.toLowerCase().includes(lowerQuery) ||
+      post.shortdescription.toLowerCase().includes(lowerQuery) ||
+      post.firstName.toLowerCase().includes(lowerQuery) ||
+      post.lastName.toLowerCase().includes(lowerQuery) ||
+      (post.tags && post.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
+    );
+      setFilteredPosts(filtered); // Update filtered posts based on search query
+    }, 300),
+    [allPosts]
   );
 
   const handleSearchChange = (e) => {
-    setQuery(e.target.value);
-  }
+    const newQuery = e.target.value;
+    setQuery(newQuery);
+    debounceSearch(newQuery);
+  };
 
   // Effect to trigger fetching when the query changes
   useEffect(() => {
-    if (query) {
-      debounceSearch(query);
-    } else {
-      fetchPosts(''); // Fetch all posts if the query is empty
-    }
-  }, [query]); // Triggered when the query changes
+    fetchPosts(); // Initial fetch
+  }, []);
 
   return (
     <div className="blog-list-container">
@@ -88,12 +101,12 @@ export default function Home() {
 
         {status === 'error' && <p>{errorMessage}</p>}
 
-        {status === 'success' && posts.length === 0 && <p>No Posts Relate to Search.</p>}
+        {status === 'success' && filteredPosts.length === 0 && <p>No Posts Relate to Search.</p>}
 
 
-        {status === 'success' && posts.length > 0 && (
+        {status === 'success' && filteredPosts.length > 0 && (
   <div className="blog-list">
-  {posts.map((post, index) => (
+  {filteredPosts.map((post, index) => (
   <div key={index} className="all-user-blog-preview">
     <div className="post-content-list">
       <div className="post-text">
@@ -116,7 +129,7 @@ export default function Home() {
 
       {post.image_url && (
         <img
-          src={`http://localhost:5000${post.image_url}`}
+          src={post.image_url}
           alt="Blog Post"
           className="post-image-list"
         />
