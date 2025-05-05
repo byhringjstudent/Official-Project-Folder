@@ -89,45 +89,50 @@ const AccountPortal = () => {
 
   return (
     <div className="account-page">
-      <aside className="sidebar">
-        <div className="logo">🌿 LegacyIQ</div>
+   <aside className="sidebar">
+    <div className="logo">🌿 LegacyIQ</div>
 
-        <nav className="menu">
-          <h4>Dashboard</h4>
-          <ul>
-            <li><a href="/blogs">📝 Blogs</a></li>
-            <li><a href="/write">✍️ Write</a></li>
-          </ul>
-          <h4>Settings</h4>
-          <ul>
-            <li><a href="/edit-profile">👤 Edit Profile</a></li>
-            <li><a href="/change-password">🔒 Change Password</a></li>
-            <li><a href="/account-deletion">❌ Delete Account</a></li>
-          </ul>
-          <h4>Need Help? Email Support at:</h4>
-          <a href="mailto:legacyiqdevteam@outlook.com" className="text-blue-500 hover:underline">
-            ✉️ legacyiqdevteam@outlook.com
-          </a>
-          <p></p>
-          <h5>© 2025 LegacyIQ</h5>
-        </nav>
-      </aside>
+    <nav className="menu">
+      <div className="menu-content">
+        <h4>Dashboard</h4>
+        <ul>
+          <li><a href="/blogs">📝 Blogs</a></li>
+          <li><a href="/write">✍️ Write</a></li>
+        </ul>
+        <h4>Settings</h4>
+        <ul>
+          <li><a href="/edit-profile">👤 Edit Profile</a></li>
+          <li><a href="/change-password">🔒 Change Password</a></li>
+          <li><a href="/account-deletion">❌ Delete Account</a></li>
+        </ul>
+      </div>
 
-      <main className="account-content">
-        <h2>Welcome to your Account Portal</h2>
-        <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Verified:</strong> {user.verifiedemail ? '✅ Yes' : ' ❌ No'}</p>
-
-        <hr />
-        <h3>Your Blog Posts</h3>
-        {blogs.length === 0 ? (
-          <p>No blog posts yet.</p>
-        ) : (
-          <BlogList blogs={blogs} deleteBlog={deleteBlog} editBlog={editBlog} query={query} setQuery={setQuery} />
-        )}
-      </main>
-    </div>
+      <div className="sidebar-footer">
+        <h4>Need Help? Email Support at:</h4>
+        <a href="mailto:legacyiqdevteam@outlook.com" className="text-blue-500 hover:underline">
+          ✉️ legacyiqdevteam@outlook.com
+        </a>
+        <h5>© 2025 LegacyIQ</h5>
+      </div>
+    </nav>
+  </aside>
+  
+    <main className="account-content">
+      <h2>Welcome to your Account Portal</h2>
+      <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+      <p><strong>Email:</strong> {user.email}</p>
+      <p><strong>Verified:</strong> {user.verifiedemail ? '✅ Yes' : ' ❌ No'}</p>
+  
+      <hr />
+      <h3>Your Blog Posts</h3>
+      {blogs.length === 0 ? (
+        <p>No blog posts yet.</p>
+      ) : (
+        <BlogList blogs={blogs} deleteBlog={deleteBlog} editBlog={editBlog} query={query} setQuery={setQuery} />
+      )}
+    </main>
+  </div>
+  
   );
 };
 

@@ -48,22 +48,17 @@
   background-color: #d4ac0d;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 275px;
-  background-color: #1f2a38;
-  padding: 1.5rem 1rem;
-  border-right: 1px solid #34495e;
-  border-radius: 6px;
-}
-
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
   color: #F1C40F; /* Gold Amber */
   margin-bottom: 1.5rem;
+  padding: 1rem 0; /* Adds padding around the logo */
+  background-color: #1f2a38; /* Same as sidebar background to make it look seamless */
+  z-index: 10;
+  position: sticky;
+  top: 0;
 }
-
 .search-bar {
   width: 100%;
   padding: 0.65rem;
@@ -182,3 +177,37 @@ hr {
   border-radius: 6px;
   border: 1px solid #b8b0b0;
   }
+
+/* Sidebar */
+.sidebar {
+  width: 275px;
+  background-color: #1f2a38;
+  padding: 1.5rem 1rem;
+  border-right: 1px solid #34495e;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Sidebar takes full height of the screen */
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Sidebar Menu Content*/
+.menu-content {
+  flex: 1;
+  overflow-y: auto; /* Allow scrolling of menu content if it overflows */
+  padding-top: 3rem; /* Adds space below the sticky logo */
+  margin-bottom: 2rem; /* Ensures footer doesn't get hidden behind the content */
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding-top: 1rem; /* Space above the footer */
+  padding-bottom: 1rem; /* Space below the footer */
+  color: #bbb;
+  text-align: center;
+  background-color: #1f2a38;
+  margin-top: auto; /* Ensures the footer stays at the bottom */
+  position: relative;
+  width: 100%;
+}

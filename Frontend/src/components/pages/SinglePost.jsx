@@ -47,41 +47,43 @@ const SinglePost = () => {
   return (
     <div className="single-post">
         
-    <button className="back-button" onClick={handleBackClick}>Back</button>
       {/* Displaying the single post */}
       <section className="single-blog">
-        {/* Display error message if provided */}
-        {error && <p>{error}</p>}
+  <div className="post">
+    <h2>{post.title}</h2>
+    <p>{post.shortdescription}</p>
+    <small>
+      {Array.isArray(post.tags)
+        ? post.tags.map((tag, index) => (
+            <span key={index} className="tag-badge">{tag}</span>
+          ))
+        : post.tags && post.tags.split(',').map((tag, index) => (
+            <span key={index} className="tag-badge">{tag}</span>
+          ))
+      }
+    </small>
+    <p>{post.content}</p>
+    <p>{new Date(post.date).toLocaleDateString()}</p>
+    {post.image_url && (
+      <img
+        src={`http://localhost:5000${post.image_url}`}
+        alt="Blog Post"
+        className="post-image"
+      />
+    )}
+  </div>
 
-        {/* Render the post details */}
-        <div className="post">
-          <h2>{post.title}</h2>
-          <p>{post.shortdescription}</p>
-          <small>
-            {/* If tags is an array, map through it */}
-            {Array.isArray(post.tags)
-              ? post.tags.map((tag, index) => (
-                  <span key={index} className="tag-badge">{tag}</span>
-                ))
-              : post.tags && post.tags.split(',').map((tag, index) => (
-                  <span key={index} className="tag-badge">{tag}</span>
-                ))
-            }
-          </small>
-          <p>{post.content}</p>
-          <small>{new Date(post.date).toLocaleDateString()}</small>
-          <p> </p>
-
-          {/* Display Image */}
-          {post.image_url && (
-                  <img
-                    src={`http://localhost:5000${post.image_url}`} // Adjust the URL as needed
-                    alt="Blog Post"
-                    className="post-image"
-                  />
-        )}
-        </div>
-      </section>
+  {/* Button positioned at the bottom right */}
+  <button className="back-button" onClick={handleBackClick}>
+    ← Back
+  </button>
+</section>
+      <div class="blog-footer-wrapper">
+         <footer class="blog-footer">
+           © 2025 LegacyIQ · Privacy · For Support, Contact us at: {""}
+          <a href="mailto:legacyiqdevteam@outlook.com">legacyiqdevteam@outlook.com</a>
+        </footer>
+     </div>
     </div>
   );
 };

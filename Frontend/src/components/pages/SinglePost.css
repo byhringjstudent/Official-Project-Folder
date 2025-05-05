@@ -1,67 +1,50 @@
+/* Single Blog Post */
+.single-blog {
+  position: relative;
+  min-height: 750px; /* Adjust the height as needed */
+  padding: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-.single-post {
-    background-color: #ffffff;
-  }
+/* Back Button Styling*/
+.back-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  font-size: 14px;
+  background-color: #2C3E50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
 
-  .single-post-button{
-    padding: 0.5rem;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  /* Blog Post List */
-  .single-blog {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  
-  .post {
-    background: #fff;
-    border: 2px solid #F1C40F;
-    padding: 1.2rem;
-    border-radius: 10px;
-    text-align: left;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-  }
-  
-  .tag-badge {
-    display: inline-block;
-    background-color: #2C3E50;
-    color: #eef6fb;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    margin-right: 5px;
-    margin-bottom: 5px;
-  }
-  
-  .success-message {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 10px;
-    border: 1px solid #c3e6cb;
-    margin: 20px;
-    border-radius: 5px;
-    text-align: center;
-    font-weight: bold;
-  }
+.back-button:hover {
+  background-color: #1A252F;
+}
 
+/* Media */
+@media (max-width: 768px) {
   .back-button {
-    background-color: #007BFF; /* blue */
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+    bottom: 10px;
+    right: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
   }
-  
-  .back-button:hover {
-    background-color: #0056b3;
+}
+
+@media (max-width: 480px) {
+  .back-button {
+    bottom: 8px;
+    right: 8px;
+    padding: 6px 10px;
+    font-size: 10px;
   }
+}
