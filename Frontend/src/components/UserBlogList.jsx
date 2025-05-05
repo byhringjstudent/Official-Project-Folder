@@ -55,10 +55,10 @@ const BlogList = ({ blogs, deleteBlog, query, setQuery }) => {
               <p></p>
               <a href={`/blog/${blog.blogID}`}>Read more →</a>
               <div className="button-group">
-                <button onClick={() => navigate(`/edit-post/${blog.blogID}`)} className="edit-button">
+                <button onClick={() => navigate(`/edit-post/${blog.blogID}`)} className=" button edit-button">
                   Edit
                 </button>
-                <button onClick={() => deleteBlog(blog.blogID)} className="delete-button">
+                <button onClick={() => deleteBlog(blog.blogID)} className="button delete-button">
                   Delete
                 </button>
               </div>
