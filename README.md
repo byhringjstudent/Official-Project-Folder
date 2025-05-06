@@ -24,3 +24,5 @@ purpose of our ngrok reserved domain.
 4. Open a separate terminal
 Run this command inside your terminal to fire up the webhook
 run "ngrok http --domain=sunbird-full-fully.ngrok-free.app 3000"
+
+5. run "npm install lodash.debounce" after CDing into Frontend
