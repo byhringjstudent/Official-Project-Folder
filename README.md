@@ -12,8 +12,8 @@ run "npm run dev"
 run "Python Flask_App.py"
 
 3. cd into RagieBot
-run "npm run dev -- -p 3001" not? 3000
-
+run "npm install next react react-dom"
+run "npm run dev -- -p 3000"
 
 Ready to run our webhook in the terminal?
 
