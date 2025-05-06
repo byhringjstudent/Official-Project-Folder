@@ -21,10 +21,6 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
-      '/static/react_build/assets': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-      },
     },
   },
 })
