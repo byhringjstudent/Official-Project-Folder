@@ -84,13 +84,3 @@ def confirm_token(token, expiration = 3600): #confirming the token
     except:
         return None
 
-
-"""
-Example of what it might look like to trigger the email verification in the front end (react.js and javaScript)
-
-const sendVirificationEmail = async (email) => {
-    const response = await fetch('send_verification_email/${email}');
-    const result = await response.text();
-    alert(result);
-};
-"""

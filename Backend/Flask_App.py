@@ -1,11 +1,10 @@
-from flask import Flask, send_from_directory
+from flask import Flask
 from flask_cors import CORS
 from flask_session import Session
 from AccountRegistrationLogin import account_routes 
 from BlogStructure import blog_routes
 from EmailVerification import email_verification_routes
 from flaskAppConfig import Config
-import os
 
 
 def create_app(config_class=Config): # creating the app with the config class
@@ -14,6 +13,7 @@ def create_app(config_class=Config): # creating the app with the config class
 
     Session(app)
     CORS(app, origins = ["http://localhost:5173"], supports_credentials= True, ) # enabling CORS for the app
+    #/api is important for the frontend to work properly with the relative paths
     app.register_blueprint(account_routes.app_bp, url_prefix='/api/account') # registering the account routes blueprint
     app.register_blueprint(blog_routes.app_bp, url_prefix='/api/blog') # registering the blog routes blueprint
     app.register_blueprint(email_verification_routes.app_bp, url_prefix='/api/email')# registering the email verification routes blueprint

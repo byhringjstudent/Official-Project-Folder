@@ -1,9 +1,11 @@
 import psycopg2
-from psycopg2 import sql
 from utils import create_unique_id
 from flaskAppConfig import db_info
 import bcrypt
 from EmailVerification.email_verification_routes import send_verification_email
+
+#This file contains all the functions related to the database for the account registration, login, and user specific information. 
+#It includes functions to create a new user, login a user, get user information, get user blogs, get user drafts, update user information, update user password, and delete a user.
 
 #Purpose: This function creates a new user in the database.
 # It takes the user's email, hashed password, first name, and last name as input.
@@ -13,8 +15,7 @@ def create_user(email, hashed_password_str, firstName, lastName):
         conn = psycopg2.connect(**db_info) #connect to the database
         cur = conn.cursor()
         #check if the email already exists in the database
-        query = sql.SQL("SELECT accountid FROM users WHERE email = %s")
-        cur.execute(query, (email,))
+        cur.execute("SELECT accountid FROM users WHERE email = %s", (email,))
         result = cur.fetchone()
         if result:
             #if the email already exists return jsonify with error message and 409 status code
@@ -46,7 +47,7 @@ def login_user(email, password):
         cur = conn.cursor()
         
         # Step 1: Get the hashed password
-        cur.execute(sql.SQL("SELECT password FROM users WHERE email = %s"), (email,))
+        cur.execute("SELECT password FROM users WHERE email = %s", (email,))
         result = cur.fetchone()
         
         if not result:
@@ -60,7 +61,7 @@ def login_user(email, password):
             return {'status': 'error', 'message': 'Incorrect password'}, 401
         
         # Step 3: Fetch accountid and userid
-        cur.execute(sql.SQL("SELECT accountid, userid FROM users WHERE email = %s"), (email,))
+        cur.execute("SELECT accountid, userid FROM users WHERE email = %s", (email,))
         accountid, userid = cur.fetchone()
         
         return {
@@ -90,7 +91,7 @@ def get_user_info(accountid):
         cur = conn.cursor()
         
         # Fetch user information based on accountid
-        cur.execute(sql.SQL("SELECT email, firstname, lastname, verifiedemail FROM users WHERE accountid = %s"), (accountid,))
+        cur.execute("SELECT email, firstname, lastname, verifiedemail FROM users WHERE accountid = %s", (accountid,))
         result = cur.fetchone()
         
         if not result:
@@ -195,22 +196,18 @@ def update_user_info(accountid, firstName, lastName, email):
             return {'status': 'error','message': f'Error Updating Account: No Information Provided.'}, 400 
         
         if firstName:
-            query = sql.SQL("UPDATE users set firstname = %s WHERE accountid = %s") #query to update the first name in the database
-            cur.execute(query, (firstName, accountid)) #execute the query with the new first name and account ID as parameters
+            cur.execute("UPDATE users set firstname = %s WHERE accountid = %s", (firstName, accountid)) #execute the query with the new first name and account ID as parameters
         
         if lastName:
-            query = sql.SQL("UPDATE users set lastname = %s WHERE accountid = %s") #query to update the last name in the database
-            cur.execute(query, (lastName, accountid)) #execute the query with the new last name and account ID as parameters
+            cur.execute("UPDATE users set lastname = %s WHERE accountid = %s", (lastName, accountid)) #execute the query with the new last name and account ID as parameters
 
-        
         if email:
             cur.execute("SELECT email FROM users WHERE email = %s", (email,)) #check if the new email already exists in the database
             result = cur.fetchone() #get the result of the query
             if result: #check if the result is not empty
                 #if the result is not empty return jsonify with error message and 409 status code
                 return {'status': 'error', 'message': 'Email already exists.'}, 409
-            query = sql.SQL("UPDATE users set email = %s WHERE accountid = %s") ##query to update the email in the database
-            cur.execute(query, (email, accountid)) ##execute the query with the new email and account ID as parameters
+            cur.execute("UPDATE users set email = %s WHERE accountid = %s", (email, accountid)) ##execute the query with the new email and account ID as parameters
             cur.execute("UPDATE users SET verifiedemail = FALSE WHERE accountid = %s", (accountid,)) #set the verified email to false in the database
             send_verification_email(email) #send confirmation email to the new email address. Function located in email_verification_routes.py
         conn.commit()
@@ -238,7 +235,7 @@ def update_user_password(accountid, oldPassword, newPassword):
         cur = conn.cursor()
         
         # Step 1: Get the hashed password
-        cur.execute(sql.SQL("SELECT password FROM users WHERE accountid = %s"), (accountid,))
+        cur.execute("SELECT password FROM users WHERE accountid = %s", (accountid,))
         result = cur.fetchone()
         
         if not result:
@@ -257,7 +254,7 @@ def update_user_password(accountid, oldPassword, newPassword):
         # Step 4: Hash new password and update in database
         hashed_new_password = bcrypt.hashpw(newPassword.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         
-        cur.execute(sql.SQL("UPDATE users SET password = %s WHERE accountid = %s"), (hashed_new_password, accountid))
+        cur.execute("UPDATE users SET password = %s WHERE accountid = %s", (hashed_new_password, accountid))
         conn.commit()
         
         return {'status': 'success', 'message': 'Password updated successfully'}, 200
@@ -287,14 +284,13 @@ def delete_user(accountid,password):
             return {'status': 'error', 'message': 'Account not found'}, 404
         
         # Delete user blogs
-        cur.execute(sql.SQL("SELECT password FROM users WHERE accountid = %s"), (accountid,))
+        cur.execute("SELECT password FROM users WHERE accountid = %s", (accountid,))
         resultPassword = cur.fetchone()
         if resultPassword:
             stored_hash = resultPassword[0]
             if bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')): #check if the input password matches the stored password
                 #if the password matches hash the new password and update it in the database
-                deleteAccount =sql.SQL("DELETE FROM account WHERE accountid = %s") #query to delete the account from the database
-                cur.execute(deleteAccount, (accountid,)) ##delete the account from the database
+                cur.execute("DELETE FROM account WHERE accountid = %s", (accountid,)) ##delete the account from the database
                 conn.commit()
                 return {'status': 'success', 'message': 'User deleted successfully'}, 200
             else:
