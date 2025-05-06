@@ -37,9 +37,9 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
   return (
     <nav className="nav">
       <div className="nav-right">
-        // Conditional rendering based on user login status
-        // If the user is not logged in, show Login and Register links
+
         {!isLoggedIn ? (
+          // If the user is not logged in, show links to Home, Login, and Register
           <>
             <Link to="/" className="nav-link">LegacyIQ</Link>
             <span className="nav-bar">|</span>
