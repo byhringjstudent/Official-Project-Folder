@@ -109,25 +109,25 @@ export default function Home() {
           onChange={handleSearchChange} // Update query on user input
           className="all-search-bar"
         />
-        // Display loading state
+        {/* Display loading state  */}
         {status === 'loading' && <p>Loading...</p>}
-        // Display error message if any
+        {/* // Display error message if any */}
         {status === 'error' && <p>{errorMessage}</p>}
-        // Display message if no posts found
+        {/* // Display message if no posts found */}
         {status === 'success' && filteredPosts.length === 0 && <p>No Posts Relate to Search.</p>}
-        // Display posts if available
+        {/* // Display posts if available */}
         {status === 'success' && filteredPosts.length > 0 && (
   <div className="blog-list">
-  // Map through the filtered posts and display them
+  {/* // Map through the filtered posts and display them */}
   {filteredPosts.map((post, index) => (
   <div key={index} className="all-user-blog-preview">
     <div className="post-content-list">
       <div className="post-text">
-        // Display the title and short description of the post
+        {/* // Display the title and short description of the post */}
         <h3>{post.title}</h3>
         <p>{post.shortdescription}</p>
         <small>
-          // Display the tags associated with the post
+          {/* // Display the tags associated with the post */}
           {post.tags.map((tag, index) => (
             <span key={index} className="tag-badge">
               {tag}
@@ -135,17 +135,17 @@ export default function Home() {
           ))}
         </small>
         <p> </p>
-        // Display the date in a more readable forma
+        {/* // Display the date in a more readable forma */}
         <small>{new Date(post.date).toLocaleDateString()}</small>
         <p>
-          // Display the author of the post
+          {/* // Display the author of the post */}
           <strong>Posted by:</strong> {post.firstName} {post.lastName}
         </p>
-        // Display a button to read more about the post
+        {/* // Display a button to read more about the post */}
         <a href={`/blog/${post.blogID}`}>Read more →</a>
       </div>
 
-      // Display the image if it exists
+      {/* // Display the image if it exists */}
       {post.image_url && (
         <img
           src={post.image_url}
