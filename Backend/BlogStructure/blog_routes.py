@@ -92,7 +92,7 @@ def single_post(id):
     accountid = session.get('accountid')
     if not accountid:
         return jsonify({'message': 'User not logged in!'}), 401
-    result, status_code = get_blog_post_by_id(id, accountid)
+    result, status_code = get_blog_post_by_id(id)
     if result['status'] == 'success':
         return jsonify({'post': result['post']}), status_code
     else:

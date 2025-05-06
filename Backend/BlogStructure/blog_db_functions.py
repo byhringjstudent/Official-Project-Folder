@@ -61,7 +61,7 @@ def get_latest_blog_posts():
             cur.close()
 
 #Purpose: This function allows users to get a specific blog post by its ID.
-def get_blog_post_by_id(blogid,accountid):
+def get_blog_post_by_id(blogid):
     try:
         conn = psycopg2.connect(**db_info) #connect to the database
         cur = conn.cursor()
