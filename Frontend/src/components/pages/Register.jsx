@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Register.css'; // Make sure this file exists and is imported correctly
 
+/*
+    Title: Register Component
+
+    Purpose:
+    The purpose of this component is to handle the user registration process.
+    It includes a form where the user can enter their email, password, first name, and last name.
+    Upon submission, it sends a request to the backend to create a new user account.
+    If the registration is successful, it redirects the user to the home page.
+*/
+
 export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,6 +20,7 @@ export default function Register() {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -20,6 +31,7 @@ export default function Register() {
       lastName,
     };
 
+    // This function sends a POST request to the backend API to register a new user.
     try {
       const response = await fetch('/api/account/register', {
         method: 'POST',
@@ -47,7 +59,9 @@ export default function Register() {
   };
 
   return (
+    
     <div className="register-container">
+      {/* Form for user registration */}
       <form onSubmit={handleSubmit} className="register-form">
         <h2 className="form-title">Register</h2>
         

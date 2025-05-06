@@ -1,0 +1,35 @@
+/* Navigation Bar Container */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2C3E50;
+    padding: 10px 20px;
+    color: white;
+    border-bottom: 4px solid #F1C40F;
+  }
+  
+  /* Right-aligned links container */
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  /* Individual nav links */
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0 6px;
+  }
+  
+  /* Special highlight or separator (like a bar or bullet) */
+  .nav-bar {
+    color: #F1C40F;
+    font-weight: bold;
+  }
+  

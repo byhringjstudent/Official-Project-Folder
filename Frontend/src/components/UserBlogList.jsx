@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+/* 
+    Title: BlogList Component
+
+    Purpose:
+    The purpose of this component is to display a list of blog posts with 
+    functionality to search, edit, and delete individual posts. It allows users 
+    to filter the displayed blogs based on a search query and provides buttons 
+    for editing and deleting each blog post.
+    The component is designed to be reusable and can be integrated into
+    different parts of the application where a list of blogs is needed.
+
+*/
+
 const BlogList = ({ blogs, deleteBlog, query, setQuery }) => {
   const [filteredBlogs, setFilteredBlogs] = useState(blogs);
   const navigate = useNavigate();

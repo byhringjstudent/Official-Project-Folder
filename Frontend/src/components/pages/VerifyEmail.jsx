@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
+/*
+    Title: VerifyEmail Component
+    Purpose:
+    The purpose of this component is to handle the email verification process.
+
+*/
+
 export default function VerifyEmail() {
   const { token } = useParams(); // Capture token from URL
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState(''); // New state for success or error
 
+  // Function to verify email using the token
+  // This function will be called when the component mounts
+  // It will send a request to the backend to verify the email
+  // and update the message and status based on the response
   useEffect(() => {
     const verifyEmail = async () => {
       try {
@@ -26,6 +37,8 @@ export default function VerifyEmail() {
   }, [token]);
 
   return (
+    // Render the verification message based on the status
+    // If the status is success, show a success message
     <div style={styles.container}>
       <h2>Email Verification</h2>
       <div style={styles.messageBox(status)}>
@@ -39,6 +52,9 @@ export default function VerifyEmail() {
     </div>
   );
 }
+
+// Styles for the component
+// These styles are used to style the container, message box, and button
 
 const styles = {
   container: {

@@ -1,5 +1,13 @@
 import React from 'react';
 
+/*
+    Title: KnowledgeBase Component
+
+    Purpose:  
+    The purpose of this component is to provide a knowledge base section
+    where users can interact with a chatbot for estate planning assistance.
+*/
+
 export default function KnowledgeBase() {
   const openBaseChat = () => {
     window.open(

@@ -3,6 +3,15 @@ import { useNavigate, useParams } from 'react-router-dom'; // To get the post ID
 import './SinglePost.css';
 import './Home.css';
 
+/*
+    Title: SinglePost Component
+
+    Purpose:
+    The purpose of this component is to display a single blog post in detail.
+    It fetches the post data from the backend using the post ID from the URL.
+
+*/
+
 const SinglePost = () => {
   const { id } = useParams(); // Get the post ID from the URL
   const [post, setPost] = useState(null);
@@ -73,7 +82,7 @@ const SinglePost = () => {
     )}
   </div>
 
-  {/* Button positioned at the bottom right */}
+  {/* Back button to Blogs page*/}
   <button className="back-button" onClick={handleBackClick}>
     ← Back
   </button>

@@ -2,6 +2,15 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './EditPost.css'; 
 
+/*
+    Title: EditPost Component
+    Purpose:
+    The purpose of this component is to allow users to edit an existing blog post.
+    It fetches the post data from the backend using the post ID from the URL,
+    and allows users to update the title, content, short description, tags, and image.
+    The component also provides functionality to save the post as a draft or publish it.
+*/
+
 function EditPost() {
   const { id } = useParams();
   const [post, setPost] = useState(null);  // Post data state
@@ -40,6 +49,7 @@ function EditPost() {
     fetchPost();
   }, [id]);  // Refetch the data when the post ID changes
 
+  // Set the initial state of the form fields when the post data is fetched
   useEffect(() => {
     if (post) {
       setTitle(post.title);  // Set the title state
@@ -50,6 +60,8 @@ function EditPost() {
     }
   }, [post]);
 
+  // Function to handle the addition of tags
+  // This function is triggered when the user presses the Enter key in the tag input field
   const handleAddTag = (e) => {
     if (e.key === 'Enter' && tagInput.trim() !== '') {
       setTags([...tags, tagInput.trim()]);
@@ -57,6 +69,8 @@ function EditPost() {
     }
   };
 
+  // Function to handle the change in the image input field
+  // This function is triggered when the user selects an image file
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -65,12 +79,16 @@ function EditPost() {
     }
   };
 
+  // Function to handle the removal of a tag
+  // This function is triggered when the user clicks the remove button on a tag
   const handleRemoveTag = (tagToRemove) => {
     const updatedTags = tags.filter(tag => tag !== tagToRemove);
     setTags(updatedTags);
   };
   
 
+  // Function to handle saving the post
+  // This function is triggered when the user clicks the Publish or Save as Draft button
   const handleSave = (status) => {
     const formData = new FormData();
     formData.append('title', title);
@@ -82,6 +100,8 @@ function EditPost() {
       formData.append('image', image);  // Append the image file if available
     }
 
+    // Send the form data to the backend to update the post
+    // The backend should handle the PUT request to update the post
     fetch(`/blog/updateposts/${id}`, {
       method: 'PUT',
       body: formData,
@@ -104,6 +124,8 @@ function EditPost() {
   if (!post) return <div>Loading...</div>;  // Show loading state while data is being fetched
 
   return (
+    // Render the form for editing the blog post
+    // The form includes fields for title, content, short description, tags, and image upload
     <div>
       <h3 className="edit-post-header">Edit Blog Post</h3>
       <div className="blog-form-section">
@@ -158,9 +180,12 @@ function EditPost() {
                     className="post-image"
                   />
         )}
+        {/* Display the image if it exists */}
         <small className="blog-labels">Upload Image</small>
       <input type="file" accept="image/*" onChange={handleImageChange} />
       {imagePreview && <img src={imagePreview} alt="Image Preview" className="preview-image" />}
+      
+      {/*Display buttons for saving the post or as a draft */}
       <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
         <button onClick={() => handleSave('published')} className="publish-button">Publish</button>
         <button onClick={() => handleSave('draft')} className="draft-button">Save as Draft</button>

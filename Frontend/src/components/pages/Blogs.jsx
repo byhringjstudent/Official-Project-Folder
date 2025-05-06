@@ -4,6 +4,14 @@ import './Blogs.css';
 import debounce from 'lodash.debounce';
 import { useCallback } from 'react';
 
+/*
+    Title: Blog Component
+    Purpose:      
+    The purpose of this component is to display a list of blog posts with
+    functionality to search individual posts. It allows users view those blogs
+    and provides a link to read more about each blog post.
+    
+*/
 
 
 export default function Home() {
@@ -47,6 +55,7 @@ export default function Home() {
         
       }
     } catch (err) {
+      // Handle error fetching posts
       console.error(err);
       setAllPosts([]);
       setFilteredPosts([]);
@@ -58,6 +67,9 @@ export default function Home() {
     }
   };
 
+
+  // Debounced search function to filter posts based on user input
+  // This function will be called after the user stops typing for 300ms
   const debounceSearch = useCallback(
     debounce((searchVal) => {
       const lowerQuery = searchVal.toLowerCase().trim();;
@@ -73,6 +85,7 @@ export default function Home() {
     [allPosts]
   );
 
+  // Effect to clean up the debounce function on unmount
   const handleSearchChange = (e) => {
     const newQuery = e.target.value;
     setQuery(newQuery);
@@ -86,7 +99,7 @@ export default function Home() {
 
   return (
     <div className="blog-list-container">
-      {/* Section 6: Blog Post Feed */}
+      {/* Header */}
       <h2 style={{ textAlign: 'center', color: 'white', fontSize: '2rem'}}>Blog Posts</h2>
       <section className="blog-list">
         <input
@@ -96,23 +109,25 @@ export default function Home() {
           onChange={handleSearchChange} // Update query on user input
           className="all-search-bar"
         />
-        
+        // Display loading state
         {status === 'loading' && <p>Loading...</p>}
-
+        // Display error message if any
         {status === 'error' && <p>{errorMessage}</p>}
-
+        // Display message if no posts found
         {status === 'success' && filteredPosts.length === 0 && <p>No Posts Relate to Search.</p>}
-
-
+        // Display posts if available
         {status === 'success' && filteredPosts.length > 0 && (
   <div className="blog-list">
+  // Map through the filtered posts and display them
   {filteredPosts.map((post, index) => (
   <div key={index} className="all-user-blog-preview">
     <div className="post-content-list">
       <div className="post-text">
+        // Display the title and short description of the post
         <h3>{post.title}</h3>
         <p>{post.shortdescription}</p>
         <small>
+          // Display the tags associated with the post
           {post.tags.map((tag, index) => (
             <span key={index} className="tag-badge">
               {tag}
@@ -120,13 +135,17 @@ export default function Home() {
           ))}
         </small>
         <p> </p>
+        // Display the date in a more readable forma
         <small>{new Date(post.date).toLocaleDateString()}</small>
         <p>
+          // Display the author of the post
           <strong>Posted by:</strong> {post.firstName} {post.lastName}
         </p>
+        // Display a button to read more about the post
         <a href={`/blog/${post.blogID}`}>Read more →</a>
       </div>
 
+      // Display the image if it exists
       {post.image_url && (
         <img
           src={post.image_url}
@@ -142,7 +161,7 @@ export default function Home() {
         )}
       </section>
 
-      {/* Section 8: Footer */}
+      {/* Footer */}
       <div class="blog-footer-wrapper">
          <footer class="blog-footer">
            © 2025 LegacyIQ · Privacy · For Support, Contact us at: {""}

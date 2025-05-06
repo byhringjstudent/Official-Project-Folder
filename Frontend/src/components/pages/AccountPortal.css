@@ -1,213 +1,227 @@
-/* Full Layout */
-.account-page {
-  display: flex;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #2C3E50; /* Navy Blue Background */
-  color: #fff;
-}
-
-.button-group {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.button {
-  padding: 8px 12px;
-  font-size: 13px;
-  border: none;
-  color: black;
-  cursor: pointer;
-  margin-left: 8px;
-  margin-top: 10px;
-  transition: background-color 0.2s ease;
-}
-
-/* delete-button */
-.delete-button {
-  border-radius: 6px;
-  background-color: #e74c3c;
-}
-
-
-.delete-button:hover {
-  background-color: #c0392b;
-}
-
-
-/*edit button*/
-.edit-button {
-  background-color: #F1C40F;
-  color: black;
-  border-radius: 6px;
-}
-
-.edit-button:hover {
-  background-color: #d4ac0d;
-}
-
-.logo {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #F1C40F; /* Gold Amber */
-  margin-bottom: 1.5rem;
-  padding: 1rem 0; /* Adds padding around the logo */
-  background-color: #1f2a38; /* Same as sidebar background to make it look seamless */
-  z-index: 10;
-  position: sticky;
-  top: 0;
-}
-.search-bar {
-  width: 100%;
-  padding: 0.65rem;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  border-radius: 6px;
-  background-color: #fff;
-  color: #2C3E50;
-  margin-bottom: 2rem;
-  box-sizing: border-box;
-}
-
-/* Sidebar Menu */
-.menu h4 {
-  font-size: 0.85rem;
-  color: #bbb;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-}
-.menu h5 {
-  font-size: 0.85rem;
-  color: #bbb;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-}
-
-.menu ul {
-  list-style: none;
-  padding: 0;
-}
-
-.menu li {
-  margin-bottom: 0.75rem;
-}
-
-.menu a {
-  text-decoration: none;
-  color: #ecf0f1;
-  font-size: 0.95rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.menu a:hover {
-  color: #2ECC71; /* Emerald Hover */
-}
-
-/* Main Content Area */
-.account-content {
-  flex: 1;
-  padding: 2.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #fff;
-  color: #2C3E50;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-}
-
-.account-content h2,
-.account-content h3 {
-  color: #2C3E50;
-}
-
-hr {
-  margin: 2rem 0;
-  border: none;
-  border-top: 1px solid #ccc;
-}
-
-/* Blog Preview Box */
-.user-blog-preview {
-  margin-bottom: 2rem;
-  padding: 1rem 1.5rem;
-  background-color: #fdfdfd;
-  border: 2px solid #F1C40F; /* Gold Amber border */
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.blog-status {
-  font-weight: bold;
-}
-
-.blog-status.published {
-  color: green;
-}
-
-.blog-status.draft {
-  color: goldenrod; /* or 'yellow', but goldenrod is more readable */
-}
-
-.user-blog-preview h4 {
-  color: #2C3E50;
-}
-
-.user-blog-preview a {
-  font-size: 0.9rem;
-  color: #2ECC71;
-  text-decoration: none;
-}
-
-.user-blog-preview a:hover {
-  text-decoration: underline;
-}
-
-.blog-search-bar {
-  width: 100%;
-  max-width: 750px;
-  margin: 0 auto 20px auto;
-  display: block;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #b8b0b0;
+/* ===========================
+   Global Layout & Base Styles
+   =========================== */
+   .account-page {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #2C3E50; /* Navy Blue Background */
+    color: #fff;
   }
-
-/* Sidebar */
-.sidebar {
-  width: 275px;
-  background-color: #1f2a38;
-  padding: 1.5rem 1rem;
-  border-right: 1px solid #34495e;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  height: 100vh; /* Sidebar takes full height of the screen */
-  position: relative;
-  flex-shrink: 0;
-}
-
-/* Sidebar Menu Content*/
-.menu-content {
-  flex: 1;
-  overflow-y: auto; /* Allow scrolling of menu content if it overflows */
-  padding-top: 3rem; /* Adds space below the sticky logo */
-  margin-bottom: 2rem; /* Ensures footer doesn't get hidden behind the content */
-}
-
-/* Sidebar Footer */
-.sidebar-footer {
-  padding-top: 1rem; /* Space above the footer */
-  padding-bottom: 1rem; /* Space below the footer */
-  color: #bbb;
-  text-align: center;
-  background-color: #1f2a38;
-  margin-top: auto; /* Ensures the footer stays at the bottom */
-  position: relative;
-  width: 100%;
-}
+  
+  /* ===========================
+     Sidebar Styles
+     =========================== */
+  .sidebar {
+    width: 275px;
+    background-color: #1f2a38;
+    padding: 1.5rem 1rem;
+    border-right: 1px solid #34495e;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Sidebar takes full height of the screen */
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  /* Logo Header in Sidebar */
+  .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #F1C40F; /* Gold Amber */
+    margin-bottom: 1.5rem;
+    padding: 1rem 0;
+    background-color: #1f2a38; /* Same as sidebar background for seamless look */
+    z-index: 10;
+    position: sticky;
+    top: 0;
+  }
+  
+  /* Sidebar Menu Container */
+  .menu-content {
+    flex: 1;
+    overflow-y: auto; /* Scroll if content overflows */
+    padding-top: 3rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Sidebar Footer */
+  .sidebar-footer {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color: #bbb;
+    text-align: center;
+    background-color: #1f2a38;
+    margin-top: auto;
+    position: relative;
+    width: 100%;
+  }
+  
+  /* Sidebar Menu Text */
+  .menu h4,
+  .menu h5 {
+    font-size: 0.85rem;
+    color: #bbb;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+  
+  /* Sidebar List Items */
+  .menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .menu li {
+    margin-bottom: 0.75rem;
+  }
+  
+  .menu a {
+    text-decoration: none;
+    color: #ecf0f1;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .menu a:hover {
+    color: #2ECC71; /* Emerald Hover */
+  }
+  
+  /* ===========================
+     Main Content Area
+     =========================== */
+  .account-content {
+    flex: 1;
+    padding: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    color: #2C3E50;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+  }
+  
+  .account-content h2,
+  .account-content h3 {
+    color: #2C3E50;
+  }
+  
+  /* Horizontal Divider */
+  hr {
+    margin: 2rem 0;
+    border: none;
+    border-top: 1px solid #ccc;
+  }
+  
+  /* ===========================
+     Buttons
+     =========================== */
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  /* Base Button Style */
+  .button {
+    padding: 8px 12px;
+    font-size: 13px;
+    border: none;
+    color: black;
+    cursor: pointer;
+    margin-left: 8px;
+    margin-top: 10px;
+    transition: background-color 0.2s ease;
+  }
+  
+  /* Delete Button */
+  .delete-button {
+    border-radius: 6px;
+    background-color: #e74c3c;
+  }
+  
+  .delete-button:hover {
+    background-color: #c0392b;
+  }
+  
+  /* Edit Button */
+  .edit-button {
+    background-color: #F1C40F;
+    color: black;
+    border-radius: 6px;
+  }
+  
+  .edit-button:hover {
+    background-color: #d4ac0d;
+  }
+  
+  /* ===========================
+     Blog Preview Section
+     =========================== */
+  .user-blog-preview {
+    margin-bottom: 2rem;
+    padding: 1rem 1.5rem;
+    background-color: #fdfdfd;
+    border: 2px solid #F1C40F; /* Gold Amber border */
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .user-blog-preview h4 {
+    color: #2C3E50;
+  }
+  
+  .user-blog-preview a {
+    font-size: 0.9rem;
+    color: #2ECC71;
+    text-decoration: none;
+  }
+  
+  .user-blog-preview a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Blog Status Text */
+  .blog-status {
+    font-weight: bold;
+  }
+  
+  .blog-status.published {
+    color: green;
+  }
+  
+  .blog-status.draft {
+    color: goldenrod;
+  }
+  
+  /* ===========================
+     Search Bars
+     =========================== */
+  /* General Search Bar */
+  .search-bar {
+    width: 100%;
+    padding: 0.65rem;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #2C3E50;
+    margin-bottom: 2rem;
+    box-sizing: border-box;
+  }
+  
+  /* Blog-specific Search Bar */
+  .blog-search-bar {
+    width: 100%;
+    max-width: 750px;
+    margin: 0 auto 20px auto;
+    display: block;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #b8b0b0;
+  }

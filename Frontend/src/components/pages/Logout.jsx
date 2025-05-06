@@ -1,6 +1,16 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+/*
+    Title: Logout Component
+
+    Purpose:
+    The purpose of this component is to handle the user logout process. 
+    It sends a request to the backend to clear the session and then redirects 
+    the user to the login page. It also updates the local storage or session 
+    storage to reflect that the user is logged out.
+*/
+
 const Logout = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
 

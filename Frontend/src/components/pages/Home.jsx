@@ -2,10 +2,21 @@ import React, { useState, useEffect } from 'react';
 import './Home.css'; // Optional: Make sure Home.css styles exist
 import { Link } from 'react-router-dom';
 
+/*
+    Title: Home Component
+    Purpose:
+    The purpose of this component is to serve as the landing page for the application.
+    It includes a hero banner, feature sections, testimonials, and a blog post feed.
+    The component fetches the latest blog posts from the backend and displays them.
+    It also provides a call to action for users to sign up.
+*/
+
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [message, setMessage] = useState('');
 
+  // Function to fetch posts from the backend
+  // Note: The useEffect hook is used to fetch data when the component mounts.
   useEffect(() => {
     const fetchPosts = async () => {
       try {

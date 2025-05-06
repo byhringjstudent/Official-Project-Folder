@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EditProfile.css'; // optional for styling
 
+/*
+    Title: EditAccount Component
+    Purpose:
+    The purpose of this component is to allow users to edit their account details.
+    It includes a form for the user to enter their new first name, last name, and email address.
+    Upon submission, it sends a request to the backend to update the user's account information.
+*/
+
 export default function EditAccount() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -10,10 +18,14 @@ export default function EditAccount() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Handle form submission
+  // This function is called when the user submits the form.
+  // If the update is successful, it redirects the user to the account portal.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    // This function sends a PUT request to the backend API to update the user's account details.
     try {
       const response = await fetch('/api/account/edit', {
         method: 'PUT',
@@ -45,7 +57,10 @@ export default function EditAccount() {
   };
 
   return (
+    // Render the form for editing account details
+    // The form includes fields for first name, last name, and email address.
     <div className="edit-account-container">
+      {/* Form */}
       <form onSubmit={handleSubmit} className="edit-account-form">
         <h2>Edit Account Details</h2>
 

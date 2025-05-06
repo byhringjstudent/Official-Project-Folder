@@ -2,6 +2,17 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css'; // Make sure this file exists in the same folder
 
+/*
+
+    Title: Login Component
+    Purpose:        
+    The purpose of this component is to handle the user login process.
+    It includes a form for the user to enter their email and password,
+    and it sends a request to the backend to authenticate the user.
+    If the login is successful, it updates the application state to reflect that the user is logged in.
+
+*/
+
 export default function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,8 +51,12 @@ export default function Login({ setIsLoggedIn }) {
     }
   };
 
+  // Render the form for user login 
+  // The form includes fields for email and password, and a submit button.
+  // When the form is submitted, it calls the handleSubmit function.
   return (
     <div className="login-container">
+      {/* Form */}
       <form onSubmit={handleSubmit} className="login-form">
         <h2>Login</h2>
 

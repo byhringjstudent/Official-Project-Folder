@@ -1,5 +1,15 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import './Navbar.css';
+
+/*
+    Title: Navbar Component
+
+    Purpose:
+    The purpose of this component is to provide a navigation bar for the application.
+    It includes links to different sections of the site, such as Home, Blog, Knowledge Base,
+    and Account Portal. The navigation bar also handles user login/logout functionality.
+*/
 
 export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
   const navigate = useNavigate();
@@ -25,62 +35,34 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   return (
-    <nav style={styles.nav}>
-      {/* Right side: Ordered links with bars */}
-      <div style={styles.right}>
+    <nav className="nav">
+      <div className="nav-right">
+        // Conditional rendering based on user login status
+        // If the user is not logged in, show Login and Register links
         {!isLoggedIn ? (
           <>
-            <Link to="/" style={styles.link}>LegacyIQ</Link>
-            <span style={styles.bar}>|</span>
-            <Link to="/login" style={styles.link}>Login</Link>
-            <span style={styles.bar}>|</span>
-            <Link to="/register" style={styles.link}>Register</Link>
+            <Link to="/" className="nav-link">LegacyIQ</Link>
+            <span className="nav-bar">|</span>
+            <Link to="/login" className="nav-link">Login</Link>
+            <span className="nav-bar">|</span>
+            <Link to="/register" className="nav-link">Register</Link>
           </>
         ) : (
+          // If the user is logged in, show links to Home, Blog, Knowledge Base, Account Portal, and Logout
           <>
-            <Link to="/" style={styles.link}>LegacyIQ</Link>
-            <span style={styles.bar}>|</span>
-            <Link to="/blogs" style={styles.link}>Blog</Link>
-            <span style={styles.bar}>|</span>
-            <Link to="/knowledge-base" style={styles.link}>Knowledge Base</Link>
-            <span style={styles.bar}>|</span>
-            <Link to="/account-portal" style={styles.link}>Account</Link>
-            <span style={styles.bar}>|</span>
-            <span onClick={handleLogout} style={styles.link}>Logout</span>
-            <span style={styles.bar}>|</span>
+            <Link to="/" className="nav-link">LegacyIQ</Link>
+            <span className="nav-bar">|</span>
+            <Link to="/blogs" className="nav-link">Blog</Link>
+            <span className="nav-bar">|</span>
+            <Link to="/knowledge-base" className="nav-link">Knowledge Base</Link>
+            <span className="nav-bar">|</span>
+            <Link to="/account-portal" className="nav-link">Account</Link>
+            <span className="nav-bar">|</span>
+            <span onClick={handleLogout} className="nav-link">Logout</span>
+            <span className="nav-bar">|</span>
           </>
         )}
       </div>
     </nav>
   );
 }
-
-const styles = {
-  nav: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#2C3E50',
-    padding: '10px 20px',
-    color: 'white',
-    borderBottom: '4px solid #F1C40F',
-  },
-  right: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    flexWrap: 'wrap',
-  },
-  link: {
-    color: 'white',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    padding: '0 6px',
-  },
-  bar: {
-    color: '#F1C40F',
-    fontWeight: 'bold',
-  },
-};
