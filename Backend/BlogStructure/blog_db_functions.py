@@ -122,26 +122,29 @@ def delete_blog_post(blogid):
             image_url = post[0]  # assuming the image URL is in the first column
             
             # Normalize path (convert backslashes to forward slashes)
-            image_url = image_url.replace("\\", "/")
-            if image_url.startswith('/static'):
-                image_url = image_url[7:]  # Remove '/static' from the start of the path
+            
+            if image_url:
+                image_url = image_url.replace("\\", "/")
+
+                if image_url.startswith('/static'):
+                    image_url = image_url[7:]  # Remove '/static' from the start of the path
 
             
             # Construct the local file path
             # Ensure we get the absolute path to the 'static' folder
-            static_folder_path = os.path.abspath('static')
-            image_path = os.path.join(static_folder_path, image_url.lstrip('/'))  # Remove leading slash from URL
+                static_folder_path = os.path.abspath('static')
+                image_path = os.path.join(static_folder_path, image_url.lstrip('/'))  # Remove leading slash from URL
             
             # Log the file path for debugging
-            print(f"Image path: {image_path}")
+                print(f"Image path: {image_path}")
             
             # Check if the image exists and delete it
-            if os.path.exists(image_path):
-                print(f"Image exists, attempting to delete: {image_path}")
-                os.remove(image_path)
-                print(f"Image successfully deleted: {image_path}")
-            else:
-                print(f"Image not found at path: {image_path}")
+                if os.path.exists(image_path):
+                    print(f"Image exists, attempting to delete: {image_path}")
+                    os.remove(image_path)
+                    print(f"Image successfully deleted: {image_path}")
+                else:
+                    print(f"Image not found at path: {image_path}")
     
         cur.execute("DELETE FROM blog WHERE blogid = %s", (str(blogid),))
         conn.commit()
