@@ -19,9 +19,9 @@ export async function middleware(request: NextRequest) {
       !pathname.startsWith("/images")
     ) {
       const redirectPath = getUnauthenticatedRedirectPath(pathname);
-      const newUrl = new URL(redirectPath, BASE_URL);
+      const newUrl = new URL(redirectPath, process.env.NEXT_PUBLIC_BASE_URL || BASE_URL);
       if (pathname !== "/") {
-        const redirectTo = new URL(pathname, BASE_URL);
+        const redirectTo = new URL(pathname, process.env.NEXT_PUBLIC_BASE_URL || BASE_URL);
         redirectTo.search = request.nextUrl.search;
         newUrl.searchParams.set("redirectTo", redirectTo.toString());
       }

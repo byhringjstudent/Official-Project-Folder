@@ -14,7 +14,7 @@ interface Params {
 
 export default async function SignInPage({ searchParams }: { searchParams: Promise<Params> }) {
   const { reset, redirectTo } = await searchParams;
-  const signUpUrl = new URL("/sign-up", settings.BASE_URL);
+  const signUpUrl = new URL("/sign-up", process.env.NEXT_PUBLIC_BASE_URL || "");
   if (redirectTo) {
     signUpUrl.searchParams.set("redirectTo", redirectTo);
   }
