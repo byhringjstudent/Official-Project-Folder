@@ -16,6 +16,14 @@ import DeleteAccount from './components/pages/DeleteAccount';
 import SinglePost from './components/pages/SinglePost';
 import EditPost from './components/pages/EditPost';
 
+/*
+    Title: App Component
+
+    Purpose:
+    The purpose of this component is to serve as the main entry point for the application.
+    It includes routing logic and manages user authentication state.
+    The component uses React Router for navigation and handles login/logout functionality.
+*/
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);  // State to track if the user is logged in
