@@ -66,21 +66,24 @@ export default function Home() {
       setLoading(false);
     }
   };
+  
 
 
   // Debounced search function to filter posts based on user input
   // This function will be called after the user stops typing for 300ms
   const debounceSearch = useCallback(
     debounce((searchVal) => {
-      const lowerQuery = searchVal.toLowerCase().trim();;
+      const words = searchVal.toLowerCase().trim().split(/[\s+,]/).filter(Boolean); // Split by whitespace
       const filtered = allPosts.filter(post =>
-      post.title.toLowerCase().includes(lowerQuery) ||
-      post.shortdescription.toLowerCase().includes(lowerQuery) ||
-      post.firstName.toLowerCase().includes(lowerQuery) ||
-      post.lastName.toLowerCase().includes(lowerQuery) ||
-      (post.tags && post.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
-    );
-      setFilteredPosts(filtered); // Update filtered posts based on search query
+        words.every(word =>
+          post.title.toLowerCase().includes(word) ||
+          post.shortdescription.toLowerCase().includes(word) ||
+          post.firstName.toLowerCase().includes(word) ||
+          post.lastName.toLowerCase().includes(word) ||
+          (post.tags && post.tags.some(tag => tag.toLowerCase().includes(word)))
+        )
+      );
+      setFilteredPosts(filtered);
     }, 300),
     [allPosts]
   );

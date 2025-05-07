@@ -4,12 +4,10 @@
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from flask import Flask, render_template, url_for, Blueprint
+from flask import render_template, url_for, Blueprint
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
-from flask import jsonify
-from flaskAppConfig import db_info
-import psycopg2
+from .email_verification_db_functions import *
 
 app_bp = Blueprint('email_verification_routes', __name__)  #creating a blueprint for the email verification routes
 
@@ -44,9 +42,9 @@ def send_verification_email(email):
     try:
         response = sg.send(message) #sending the email
         if response.status_code == 202: #checking if the email was sent successfully
-            print("Email sent successfully")
+            print("Email sent successfully")#debugging code
         else:
-            print("Failed to send email")
+            print("Failed to send email")#debugging code
         return f"A verification email was sent to {str(email)}, your action is needed."
     except Exception as e:
         return f"We encountered an error while sending your verification email: {str(e)}"
@@ -61,21 +59,14 @@ def send_verification(email): #sending verification email to the user
 def verify_email(token): 
     email = confirm_token(token) #confirming the token
     if email: #checking if the token is valid
-        conn = psycopg2.connect(**db_info) 
-        cur = conn.cursor()
-        cur.execute("UPDATE users SET verifiedemail = TRUE WHERE email = %s", (email,)) #updating the database to set the email as verified
-        conn.commit()
-        cur.execute("SELECT firstname FROM users WHERE email = %s", (email,))
-        user = cur.fetchone()
-        if user:
-            first_name = user[0]
+        result = verify_email_in_db(email)
+        if result['status'] == 'success':
+            first_name = result['firstname']
+            return render_template('verification_success.html', message=f"Congratulations {first_name}! Your email at: {email}, has been successfully verified!")
         else:
-            print("User not found in the database.")
-        cur.close()
-        conn.close()
-        return render_template('verification_success.html', message=f"Congratulations {first_name}! Your email at: {email}, has been successfully verified!")
+            return render_template('verification_error.html', message=f"Sorry {first_name} , your verification link is invalid or expired.")
     else:
-        return render_template('verification_error.html', message=f"Sorry {first_name} , your verification link is invalid or expired.")
+        return render_template('verification_error.html', message="Sorry, your verification link is invalid or expired.")
  
 def confirm_token(token, expiration = 3600): #confirming the token
     try:

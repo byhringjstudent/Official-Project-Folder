@@ -10,7 +10,6 @@ import json
 from .blog_db_functions import *
 
 
-
 app_bp = Blueprint('blog_routes', __name__)
 
 #Purpose: This route allows users to create blog posts. Users will include a title, short description of the blog, the content
@@ -60,43 +59,6 @@ def create_post():
     else:
         return jsonify({'message': result['message']}), status_code
     
-    
-
-#purpose: This route allows users to view all blog posts.
-# Users will be able to view all blog posts that are published.
-@app_bp.route('/readposts', methods = ['GET'])
-def get_posts():
-    result, status_code = get_all_blog_posts()
-    if result['status'] == 'success':
-        return jsonify({'posts': result['posts']}), status_code
-    else:
-        return jsonify({'message': result['message']}), status_code
-
-
-#Purpose: This route allows users to view the latest blog posts.
-# Users will be able to view the 2 latest blog posts that are published.
-@app_bp.route('/read-latest-posts', methods = ['GET'])
-def get_latest_posts():
-    result, status_code = get_latest_blog_posts()
-    if result['status'] == 'success':
-        return jsonify({'posts': result['posts']}), status_code
-    else:
-        return jsonify({'message': result['message']}), status_code
-    
-
-#Purpose: allow users to view one of their posts 
-# Users will be able to view one of their posts by using the blog id.
-# The blog id will be passed in the URL.
-@app_bp.route('/get-single-post/<uuid:id>', methods = ['GET'])
-def single_post(id):
-    accountid = session.get('accountid')
-    if not accountid:
-        return jsonify({'message': 'User not logged in!'}), 401
-    result, status_code = get_blog_post_by_id(id)
-    if result['status'] == 'success':
-        return jsonify({'post': result['post']}), status_code
-    else:
-        return jsonify({'message': result['message']}), status_code
    
 
 #Purpose: update existing blog post
@@ -119,7 +81,7 @@ def update_post(id):
         post = cur.fetchone()
         if post:
             current_image_url = post[0]
-            print(current_image_url)
+            print(current_image_url)#debugging code
         cur.close()
         conn.close()
     except Exception as e:
@@ -131,7 +93,7 @@ def update_post(id):
             filename = str(create_unique_id()) + os.path.splitext(image.filename)[1]
             filename = secure_filename(filename)
             filepath = os.path.join(UPLOAD_FOLDER, filename)
-            print(filepath)
+            print(filepath)#debugging code
             image.save(filepath)
             image_url = f"/{filepath}"  # Or generate full URL if needed
         else:
@@ -163,7 +125,7 @@ def update_post(id):
                 os.remove(image_path)
                 #print(f"Image successfully deleted: {image_path}")
             else:
-                print(f"Image not found at path: {image_path}")
+                print(f"Image not found at path: {image_path}")#debugging code
         
         if not new_title and not new_content and not new_status and not new_shortdescription and not new_tags:
             return jsonify({'message': 'Need to update title, content, status, short description, or tags to update blog post!'}), 400
@@ -185,29 +147,6 @@ def delete_post(id):
         return jsonify({'message': result['message']}), status_code
     else:
         return jsonify({'message': result['message']}), status_code
-
-#purpose: Allow user to search for specific blogs, based on tags, title, or short description. 
-#this route is specifically for the blog page, it will only return publshed blogs.
-@app_bp.route('/search-published-post', methods = ['GET'])
-def search_published_blogs():
-    query = request.args.get('q', '').strip()
-    result, status_code = search_published_posts(query)
-    if result['status'] == 'success':
-        return jsonify({'status': 'success','post': result['post']}), status_code
-    else:
-        return jsonify({'status': 'error','message': result['message']}), status_code
     
-    
-#purpose: Allow user to search for specific blogs, based on tags, title, or short description. 
-#this route is specifically for the acount portal page, it will return all blogs whether publshed or saved as draft.
-@app_bp.route('/search-all-post', methods = ['GET'])
-def search_all_blogs():
-    accountid = session.get('accountid')
-    query = request.args.get('q', '').strip()
-    result, status_code = search_all_posts(query,accountid)
-    if result['status'] == 'success':
-        return jsonify({'status': 'success','post': result['post']}), status_code
-    else:
-        return jsonify({'status': 'error','message': result['message']}), status_code
     
    

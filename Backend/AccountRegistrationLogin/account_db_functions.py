@@ -29,7 +29,7 @@ def create_user(email, hashed_password_str, firstName, lastName):
         conn.close()
         return {'status': 'success', 'accountid': accountid, 'userid': create_unique_id()}, 201
     except psycopg2.Error as e:
-        print("Database error:", e)
+        print("Database error:", e) #debugging code
         return {'status': 'error', 'message': 'Database error'}, 500
     finally:
         if cur:
@@ -71,7 +71,7 @@ def login_user(email, password):
         }, 200
         
     except psycopg2.Error as e:
-        print("Database error:", e)
+        print("Database error:", e) #debugging code
         return {'status': 'error', 'message': 'Database error'}, 500
     
     finally:
@@ -108,7 +108,7 @@ def get_user_info(accountid):
         }, 200
         
     except psycopg2.Error as e:
-        print("Database error:", e)
+        print("Database error:", e) #debugging code
         return {'status': 'error', 'message': 'Database error'}, 500
     
     finally:
@@ -139,7 +139,7 @@ def get_user_blogs(accountid):
         return {'status': 'success','blogs': posts_data }, 200
         
     except psycopg2.Error as e:
-        print("Database error:", e)
+        print("Database error:", e) #debugging code
         return {'status': 'error', 'message': 'Database error'}, 500
     
     finally:
@@ -173,7 +173,7 @@ def get_user_drafts(accountid):
         }, 200
         
     except psycopg2.Error as e:
-        print("Database error:", e)
+        print("Database error:", e) #debugging code
         return {'status': 'error', 'message': 'Database error'}, 500
     
     finally:
@@ -215,7 +215,7 @@ def update_user_info(accountid, firstName, lastName, email):
         return {'status': 'success', 'message': 'User information updated successfully'}, 200
         
     except psycopg2.Error as e:
-        print("Database error:", e)
+        print("Database error:", e) #debugging code
         return {'status': 'error', 'message': 'Database error'}, 500
     
     finally:
@@ -260,7 +260,7 @@ def update_user_password(accountid, oldPassword, newPassword):
         return {'status': 'success', 'message': 'Password updated successfully'}, 200
         
     except psycopg2.Error as e:
-        print("Database error:", e)
+        print("Database error:", e) #debugging code
         return {'status': 'error', 'message': 'Database error'}, 500
     
     finally:

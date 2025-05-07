@@ -136,15 +136,15 @@ def delete_blog_post(blogid):
                 image_path = os.path.join(static_folder_path, image_url.lstrip('/'))  # Remove leading slash from URL
             
             # Log the file path for debugging
-                print(f"Image path: {image_path}")
+                print(f"Image path: {image_path}") #debugging code
             
             # Check if the image exists and delete it
                 if os.path.exists(image_path):
-                    print(f"Image exists, attempting to delete: {image_path}")
+                    print(f"Image exists, attempting to delete: {image_path}")#debugging code
                     os.remove(image_path)
-                    print(f"Image successfully deleted: {image_path}")
+                    print(f"Image successfully deleted: {image_path}")#debugging code
                 else:
-                    print(f"Image not found at path: {image_path}")
+                    print(f"Image not found at path: {image_path}")#debugging code
     
         cur.execute("DELETE FROM blog WHERE blogid = %s", (str(blogid),))
         conn.commit()
@@ -207,7 +207,7 @@ def search_all_posts(userSearch, accountid):
             return {'status': 'error', 'message': 'No search given'}, 500
         
     except psycopg2.Error as e:
-        print(str(e))
+        print(str(e))#debugging code
         return {'status': 'error', 'message': str(e)}, 500
     
     finally:

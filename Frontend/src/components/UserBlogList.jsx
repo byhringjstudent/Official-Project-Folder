@@ -21,11 +21,14 @@ const BlogList = ({ blogs, deleteBlog, query, setQuery }) => {
   useEffect(() => {
     // Filter blogs based on the search query
     if (query) {
+      const words = query.toLowerCase().split(/[\s,]+/).filter(word => word);
       const filtered = blogs.filter(blog =>
-        blog.title.toLowerCase().includes(query.toLowerCase()) ||
-        blog.shortdescription.toLowerCase().includes(query.toLowerCase()) ||
-        (blog.tags && blog.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))) ||
-        blog.status.toLowerCase().includes(query.toLowerCase()) // Check tags if present
+        words.some(word=>
+          blog.title.toLowerCase().includes(word) ||
+          blog.shortdescription.toLowerCase().includes(word) ||
+          (blog.tags && blog.tags.some(tag => tag.toLowerCase().includes(word))) ||
+          blog.status.toLowerCase().includes(word)// Check tags if present
+        )
       );
       setFilteredBlogs(filtered);
     } else {
