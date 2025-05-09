@@ -126,7 +126,10 @@ export default function Home() {
                     </span>
                   ))}
                 </small>
-                <p>{post.content}</p>
+                <p> </p>
+                <div style={{ whiteSpace: 'pre-wrap' }}>
+                  {post.content}
+                </div>
                 <small>{new Date(post.date).toLocaleDateString()}</small>
                 <p>
                   <strong>Posted by:</strong> {post.firstName} {post.lastName}

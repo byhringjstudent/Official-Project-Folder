@@ -71,7 +71,10 @@ const SinglePost = () => {
           ))
       }
     </small>
-    <p>{post.content}</p>
+    <p> </p>
+    <div style={{ whiteSpace: 'pre-wrap' }}>
+      {post.content}
+    </div>
     <p>{new Date(post.date).toLocaleDateString()}</p>
     {post.image_url && (
       <img
