@@ -54,8 +54,6 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
             <span className="nav-bar">|</span>
             <Link to="/blogs" className="nav-link">Blog</Link>
             <span className="nav-bar">|</span>
-            <Link to="/knowledge-base" className="nav-link">Knowledge Base</Link>
-            <span className="nav-bar">|</span>
             <Link to="/account-portal" className="nav-link">Account</Link>
             <span className="nav-bar">|</span>
             <span onClick={handleLogout} className="nav-link">Logout</span>

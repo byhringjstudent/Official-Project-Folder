@@ -70,7 +70,7 @@ export default function Home() {
         <div className="feature-text">
           <h2>Revolutionize Your Estate Planning with AI</h2>
           <p>
-            Our AI engine helps automate and personalize your estate documents in minutes.
+            Our future AI engine helps automate and personalize your estate documents in minutes.
           </p>
         </div>
       </section>
@@ -90,7 +90,7 @@ export default function Home() {
 
       {/* Section 4: AI Agent Help Cards */}
       <section className="agent-section">
-        <h2>Supercharge Your Planning with Our RAG Agent</h2>
+        <h2>In a Future Feature, Supercharge Your Planning with Our RAG Agent</h2>
         <div className="agent-cards">
           <div className="card">What documents do I need?</div>
           <div className="card">How do trusts compare to wills?</div>

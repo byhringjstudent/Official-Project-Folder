@@ -4,6 +4,7 @@ import React from 'react';
     Title: KnowledgeBase Component
 
     Purpose:  
+    This feature is not implemented yet due to conflicts between google OAuth.
     The purpose of this component is to provide a knowledge base section
     where users can interact with a chatbot for estate planning assistance.
 */
