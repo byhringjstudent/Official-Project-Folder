@@ -1,4 +1,12 @@
-**********************
+*************************
+installation requirements
+*************************
+1. pip install requirements.txt
+2. npm install vite
+3. npm install lodash.debounce
+
+
+*********************
 Firing up the Web App!
 **********************
 
