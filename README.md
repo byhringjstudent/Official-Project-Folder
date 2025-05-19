@@ -18,3 +18,7 @@ run "npm run dev"
 
 2. cd into Backend
 run "Python Flask_App.py"
+
+If you error out then try to run:
+rm -rf node_modules package-lock.json
+npm install
