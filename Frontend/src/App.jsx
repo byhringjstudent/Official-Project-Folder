@@ -15,7 +15,13 @@ import EditProfile from './components/pages/EditProfile';
 import DeleteAccount from './components/pages/DeleteAccount';
 import SinglePost from './components/pages/SinglePost';
 import EditPost from './components/pages/EditPost';
+import { checkAuth } from './api';
 
+useEffect(() => {
+  checkAuth().then(data => {
+    console.log('Auth status:', data);
+  });
+}, []);
 /*
     Title: App Component
 
